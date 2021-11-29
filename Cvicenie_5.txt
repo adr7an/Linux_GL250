@@ -1,0 +1,606 @@
+			CVICENIE 05 - 29.10.2021
+---------------------------------------------------------------------
+---------------------------------------------------------------------
+---------------------------------------------------------------------
+			  LINUX - POKROCILY
+---------------------------------------------------------------------
+---------------------------------------------------------------------
+---------------------------------------------------------------------
+LOGY - LOG FILES
+---------------------------------------------------------------------
+---------------------------------------------------------------------
+---------------------------------------------------------------------
+LOG = dennik operacneho systemu, zoznam sprav
+- ma iba informacnu hodnotu
+APLIKACNE LOGY 
+SYSTEMOVE LOGY
+---------------------------------------------------------------------
+aby sa logy vytvarali musi bezat sluzba = syslog:
+syslog;
+/var/log - cesta k logom
+/var/log/messages
+/var/log/syslog
+/var/log/secure 
+/var/log/lastlog - posledne prihlasenie
+---------------------------------------------------------------------
+who -b
+         system boot  2021-10-28 09:24
+---------------------------------------------------------------------
+systemctl status rsyslog
+● rsyslog.service - System Logging Service
+   Loaded: loaded (/usr/lib/systemd/system/rsyslog.service; enabled; vendor preset: enabled)
+   Active: active (running) since Thu 2021-10-28 09:24:42 CEST; 19h ago
+     Docs: man:rsyslogd(8)
+           http://www.rsyslog.com/doc/
+ Main PID: 1059 (rsyslogd)
+   CGroup: /system.slice/rsyslog.service
+           └─1059 /usr/sbin/rsyslogd -n
+
+Oct 28 09:24:41 localhost.localdomain systemd[1]: Starting System Logging Service...
+Oct 28 09:24:42 localhost.localdomain rsyslogd[1059]:  [origin software="rsyslogd" swVersion="8.24.0-57.el7_9.1" x-pid="1059" x-info="http://www.rs..."] start
+Oct 28 09:24:42 localhost.localdomain systemd[1]: Started System Logging Service.
+Hint: Some lines were ellipsized, use -l to show in full.
+---------------------------------------------------------------------
+systemctl status crond
+● crond.service - Command Scheduler
+   Loaded: loaded (/usr/lib/systemd/system/crond.service; enabled; vendor preset: enabled)
+   Active: active (running) since Thu 2021-10-28 09:24:36 CEST; 19h ago
+ Main PID: 737 (crond)
+   CGroup: /system.slice/crond.service
+           └─737 /usr/sbin/crond -n
+
+Oct 28 09:24:36 localhost.localdomain systemd[1]: Started Command Scheduler.
+Oct 28 09:24:36 localhost.localdomain crond[737]: (CRON) INFO (RANDOM_DELAY will be scaled with factor 34% if used.)
+Oct 28 09:24:37 localhost.localdomain crond[737]: (CRON) INFO (running with inotify support)
+Oct 28 10:32:01 localhost.localdomain crond[737]: (root) RELOAD (/var/spool/cron/root)
+Oct 28 10:33:01 localhost.localdomain crond[737]: (root) RELOAD (/var/spool/cron/root)
+Oct 28 10:36:01 localhost.localdomain crond[737]: (root) RELOAD (/var/spool/cron/root)
+Oct 28 10:37:01 localhost.localdomain crond[737]: (root) RELOAD (/var/spool/cron/root)
+---------------------------------------------------------------------
+last
+root     pts/0        10.0.2.2         Fri Oct 29 04:26   still logged in
+root     pts/1        10.0.2.2         Thu Oct 28 09:44 - 11:40  (01:55)
+root     pts/0        10.0.2.2         Thu Oct 28 09:27 - 11:40  (02:12)
+root     tty1                          Thu Oct 28 09:27   still logged in
+root     pts/0        10.0.2.2         Thu Oct 28 09:24 - 09:27  (00:02)
+reboot   system boot  3.10.0-1160.45.1 Thu Oct 28 09:24 - 05:01  (19:37)
+---------------------------------------------------------------------
+last | head -n  10
+root     pts/0        10.0.2.2         Fri Oct 29 04:26   still logged in
+root     pts/1        10.0.2.2         Thu Oct 28 09:44 - 11:40  (01:55)
+root     pts/0        10.0.2.2         Thu Oct 28 09:27 - 11:40  (02:12)
+root     tty1                          Thu Oct 28 09:27   still logged in
+root     pts/0        10.0.2.2         Thu Oct 28 09:24 - 09:27  (00:02)
+reboot   system boot  3.10.0-1160.45.1 Thu Oct 28 09:24 - 05:05  (19:40)
+root     pts/0        10.0.2.2         Thu Oct 28 09:22 - crash  (00:01)
+root     pts/0        10.0.2.2         Thu Oct 28 08:54 - 09:22  (00:28)
+root     pts/2        10.0.2.2         Thu Oct 28 07:03 - 07:03  (00:00)
+root     pts/1        10.0.2.2         Thu Oct 28 07:01 - crash  (02:23)
+---------------------------------------------------------------------
+last | grep rebo / nedavat reboot
+reboot   system boot  3.10.0-1160.45.1 Thu Oct 28 09:24 - 05:01  (19:36)
+reboot   system boot  3.10.0-1160.45.1 Wed Oct 27 07:05 - 05:01 (1+21:56)
+reboot   system boot  3.10.0-1160.45.1 Wed Oct 27 06:24 - 07:05  (00:41)
+reboot   system boot  3.10.0-1160.45.1 Wed Oct 27 06:16 - 07:05  (00:48)
+reboot   system boot  3.10.0-1160.45.1 Tue Oct 26 10:35 - 07:05  (20:29)
+reboot   system boot  3.10.0-1160.45.1 Tue Oct 26 09:18 - 07:05  (21:46)
+reboot   system boot  3.10.0-1160.45.1 Tue Oct 26 09:04 - 07:05  (22:01)
+reboot   system boot  3.10.0-1160.45.1 Tue Oct 26 10:00 - 07:05  (21:04)
+reboot   system boot  3.10.0-1160.45.1 Tue Oct 26 09:38 - 10:00  (00:21)
+reboot   system boot  3.10.0-1160.45.1 Tue Oct 26 09:36 - 10:00  (00:24)
+reboot   system boot  3.10.0-1160.45.1 Tue Oct 26 09:13 - 09:35  (00:22)
+reboot   system boot  3.10.0-1160.45.1 Tue Oct 26 08:31 - 09:12  (00:41)
+reboot   system boot  3.10.0-1160.el7. Tue Oct 26 08:01 - 09:12  (01:11)
+---------------------------------------------------------------------
+less /var/log/messages 
+/error - hladanie v logoch
+/icinga
+---------------------------------------------------------------------
+https://www.loggly.com/ultimate-guide/using-journalctl/
+---------------------------------------------------------------------
+journalctl --since "1 hour ago"
+---------------------------------------------------------------------
+journalctl --since "2021-10-01 23:15:00" --until "2021-10-29 23:20:00"
+---------------------------------------------------------------------
+journalctl --since "2 days ago"
+---------------------------------------------------------------------
+ULOHA: Najdite zoznam vsetkych balikov, ktore sa nainstalovali
+/var/log/yum.log
+---------------------------------------------------------------------
+cat /var/log/yum.log | grep -i installed | wc -l
+---------------------------------------------------------------------
+cat /var/log/yum.log  | grep -i installed
+Oct 26 08:24:56 Installed: kernel-3.10.0-1160.45.1.el7.x86_64
+Oct 26 09:09:56 Installed: epel-release-7-11.noarch
+Oct 26 09:10:33 Installed: sl-5.02-1.el7.x86_64
+Oct 26 10:28:51 Installed: htop-2.2.0-3.el7.x86_64
+Oct 26 10:35:20 Installed: apr-1.4.8-7.el7.x86_64
+Oct 26 10:35:20 Installed: apr-util-1.5.2-6.el7.x86_64
+Oct 26 10:35:20 Installed: httpd-tools-2.4.6-97.el7.centos.1.x86_64
+Oct 26 10:35:21 Installed: mailcap-2.1.41-2.el7.noarch
+Oct 26 10:35:23 Installed: httpd-2.4.6-97.el7.centos.1.x86_64
+Oct 26 10:36:43 Installed: 1:telnet-0.17-66.el7.x86_64
+Oct 26 11:00:48 Installed: 1:perl-parent-0.225-244.el7.noarch
+Oct 26 11:00:48 Installed: perl-HTTP-Tiny-0.033-3.el7.noarch
+Oct 26 11:00:48 Installed: perl-podlators-2.5.1-3.el7.noarch
+Oct 26 11:00:48 Installed: perl-Pod-Perldoc-3.20-4.el7.noarch
+Oct 26 11:00:48 Installed: 1:perl-Pod-Escapes-1.04-299.el7_9.noarch
+Oct 26 11:00:49 Installed: perl-Encode-2.51-7.el7.x86_64
+Oct 26 11:00:49 Installed: perl-Text-ParseWords-3.29-4.el7.noarch
+Oct 26 11:00:49 Installed: perl-Pod-Usage-1.63-3.el7.noarch
+Oct 26 11:00:49 Installed: 4:perl-macros-5.16.3-299.el7_9.x86_64
+Oct 26 11:00:49 Installed: perl-Storable-2.45-3.el7.x86_64
+Oct 26 11:00:49 Installed: perl-Exporter-5.68-3.el7.noarch
+Oct 26 11:00:49 Installed: perl-constant-1.27-2.el7.noarch
+Oct 26 11:00:49 Installed: perl-Socket-2.010-5.el7.x86_64
+Oct 26 11:00:49 Installed: perl-Time-Local-1.2300-2.el7.noarch
+Oct 26 11:00:50 Installed: perl-Carp-1.26-244.el7.noarch
+Oct 26 11:00:50 Installed: 4:perl-Time-HiRes-1.9725-3.el7.x86_64
+Oct 26 11:00:50 Installed: perl-PathTools-3.40-5.el7.x86_64
+Oct 26 11:00:50 Installed: perl-Scalar-List-Utils-1.27-248.el7.x86_64
+Oct 26 11:00:50 Installed: 1:perl-Pod-Simple-3.28-4.el7.noarch
+Oct 26 11:00:50 Installed: perl-File-Temp-0.23.01-3.el7.noarch
+Oct 26 11:00:50 Installed: perl-File-Path-2.09-2.el7.noarch
+Oct 26 11:00:50 Installed: perl-threads-shared-1.43-6.el7.x86_64
+Oct 26 11:00:50 Installed: perl-threads-1.87-4.el7.x86_64
+Oct 26 11:00:51 Installed: perl-Filter-1.49-3.el7.x86_64
+Oct 26 11:00:51 Installed: 4:perl-libs-5.16.3-299.el7_9.x86_64
+Oct 26 11:00:51 Installed: perl-Getopt-Long-2.40-3.el7.noarch
+Oct 26 11:00:57 Installed: 4:perl-5.16.3-299.el7_9.x86_64
+Oct 26 11:00:57 Installed: 1:perl-Error-0.17020-2.el7.noarch
+Oct 26 11:00:57 Installed: perl-TermReadKey-2.30-20.el7.x86_64
+Oct 26 11:00:57 Installed: rsync-3.1.2-10.el7.x86_64
+Oct 26 11:00:58 Installed: perl-Git-1.8.3.1-23.el7_8.noarch
+Oct 26 11:01:02 Installed: git-1.8.3.1-23.el7_8.x86_64
+Oct 26 09:44:54 Installed: centos-indexhtml-7-9.el7.centos.noarch
+Oct 26 09:44:55 Installed: lynx-2.8.8-0.3.dev15.el7.x86_64
+Oct 27 05:39:40 Installed: perl-Data-Dumper-2.145-3.el7.x86_64
+Oct 27 05:39:40 Installed: 1:perl-Compress-Raw-Zlib-2.061-4.el7.x86_64
+Oct 27 05:39:43 Installed: 1:mariadb-5.5.68-1.el7.x86_64
+Oct 27 05:39:43 Installed: perl-Net-Daemon-0.48-5.el7.noarch
+Oct 27 05:39:43 Installed: perl-Compress-Raw-Bzip2-2.061-3.el7.x86_64
+Oct 27 05:39:43 Installed: perl-IO-Compress-2.061-2.el7.noarch
+Oct 27 05:39:43 Installed: perl-PlRPC-0.2020-14.el7.noarch
+Oct 27 05:39:44 Installed: perl-DBI-1.627-4.el7.x86_64
+Oct 27 05:39:44 Installed: perl-DBD-MySQL-4.023-6.el7.x86_64
+Oct 27 05:39:50 Installed: 1:mariadb-server-5.5.68-1.el7.x86_64
+Oct 27 05:40:59 Installed: postgresql-libs-9.2.24-7.el7_9.x86_64
+Oct 27 05:41:03 Installed: postgresql-9.2.24-7.el7_9.x86_64
+Oct 27 05:41:03 Installed: uuid-1.6.2-26.el7.x86_64
+Oct 27 05:41:04 Installed: libxslt-1.1.28-6.el7.x86_64
+Oct 27 05:41:04 Installed: postgresql-contrib-9.2.24-7.el7_9.x86_64
+Oct 27 05:41:06 Installed: postgresql-server-9.2.24-7.el7_9.x86_64
+Oct 27 06:50:21 Installed: wget-1.14-18.el7_6.1.x86_64
+Oct 27 06:57:26 Installed: libX11-common-1.6.7-4.el7_9.noarch
+Oct 27 06:57:26 Installed: libzip-0.10.1-8.el7.x86_64
+Oct 27 06:57:27 Installed: php-common-5.4.16-48.el7.x86_64
+Oct 27 06:57:27 Installed: php-pdo-5.4.16-48.el7.x86_64
+Oct 27 06:57:27 Installed: php-mysql-5.4.16-48.el7.x86_64
+Oct 27 06:57:27 Installed: php-process-5.4.16-48.el7.x86_64
+Oct 27 06:57:27 Installed: php-xml-5.4.16-48.el7.x86_64
+Oct 27 06:57:28 Installed: php-cli-5.4.16-48.el7.x86_64
+Oct 27 06:57:28 Installed: php-bcmath-5.4.16-48.el7.x86_64
+Oct 27 06:57:34 Installed: php-ZendFramework-1.12.20-1.el7.noarch
+Oct 27 06:57:34 Installed: php-ZendFramework-Db-Adapter-Pdo-1.12.20-1.el7.noarch
+Oct 27 06:57:35 Installed: libXau-1.0.8-2.1.el7.x86_64
+Oct 27 06:57:35 Installed: libxcb-1.13-1.el7.x86_64
+Oct 27 06:57:35 Installed: libX11-1.6.7-4.el7_9.x86_64
+Oct 27 06:57:35 Installed: libXpm-3.5.12-1.el7.x86_64
+Oct 27 06:57:35 Installed: t1lib-5.1.2-14.el7.x86_64
+Oct 27 06:57:37 Installed: libicu-50.2-4.el7_7.x86_64
+Oct 27 06:57:37 Installed: libjpeg-turbo-1.2.90-8.el7.x86_64
+Oct 27 06:57:38 Installed: php-gd-5.4.16-48.el7.x86_64
+Oct 27 06:57:38 Installed: php-intl-5.4.16-48.el7.x86_64
+Oct 27 06:57:38 Installed: php-ZendFramework-Db-Adapter-Pdo-Mysql-1.12.20-1.el7.noarch
+Oct 27 06:57:39 Installed: php-5.4.16-48.el7.x86_64
+Oct 27 06:57:39 Installed: php-ldap-5.4.16-48.el7.x86_64
+Oct 27 07:00:28 Installed: libtalloc-2.1.16-1.el7.x86_64
+Oct 27 07:00:28 Installed: boost169-system-1.69.0-2.el7.x86_64
+Oct 27 07:00:28 Installed: libtevent-0.9.39-1.el7.x86_64
+Oct 27 07:00:28 Installed: nagios-common-4.4.6-4.el7.x86_64
+Oct 27 07:00:28 Installed: nagios-plugins-2.3.3-2.el7.x86_64
+Oct 27 07:00:28 Installed: nagios-plugins-perl-2.3.3-2.el7.x86_64
+Oct 27 07:00:28 Installed: libtdb-1.3.18-1.el7.x86_64
+Oct 27 07:00:29 Installed: libldb-1.5.4-2.el7.x86_64
+Oct 27 07:00:29 Installed: samba-common-4.10.16-15.el7_9.noarch
+Oct 27 07:00:29 Installed: boost169-thread-1.69.0-2.el7.x86_64
+Oct 27 07:00:29 Installed: boost169-chrono-1.69.0-2.el7.x86_64
+Oct 27 07:00:29 Installed: boost169-context-1.69.0-2.el7.x86_64
+Oct 27 07:00:29 Installed: avahi-libs-0.6.31-20.el7.x86_64
+Oct 27 07:00:29 Installed: 1:cups-libs-1.6.3-51.el7.x86_64
+Oct 27 07:00:30 Installed: ntpdate-4.2.6p5-29.el7.centos.2.x86_64
+Oct 27 07:00:30 Installed: 32:bind-license-9.11.4-26.P2.el7_9.7.noarch
+Oct 27 07:00:30 Installed: boost169-coroutine-1.69.0-2.el7.x86_64
+Oct 27 07:00:30 Installed: nagios-plugins-ircd-2.3.3-2.el7.x86_64
+Oct 27 07:00:30 Installed: nagios-plugins-wave-2.3.3-2.el7.x86_64
+Oct 27 07:00:30 Installed: nagios-plugins-file_age-2.3.3-2.el7.x86_64
+Oct 27 07:00:30 Installed: nagios-plugins-breeze-2.3.3-2.el7.x86_64
+Oct 27 07:00:30 Installed: nagios-plugins-mailq-2.3.3-2.el7.x86_64
+Oct 27 07:00:31 Installed: nagios-plugins-flexlm-2.3.3-2.el7.x86_64
+Oct 27 07:00:31 Installed: nagios-plugins-overcr-2.3.3-2.el7.x86_64
+Oct 27 07:00:31 Installed: nagios-plugins-oracle-2.3.3-2.el7.x86_64
+Oct 27 07:00:31 Installed: nagios-plugins-ups-2.3.3-2.el7.x86_64
+Oct 27 07:00:31 Installed: nagios-plugins-swap-2.3.3-2.el7.x86_64
+Oct 27 07:00:31 Installed: nagios-plugins-ping-2.3.3-2.el7.x86_64
+Oct 27 07:00:31 Installed: nagios-plugins-by_ssh-2.3.3-2.el7.x86_64
+Oct 27 07:00:31 Installed: nagios-plugins-dummy-2.3.3-2.el7.x86_64
+Oct 27 07:00:31 Installed: nagios-plugins-ide_smart-2.3.3-2.el7.x86_64
+Oct 27 07:00:31 Installed: nagios-plugins-log-2.3.3-2.el7.x86_64
+Oct 27 07:00:31 Installed: nagios-plugins-smtp-2.3.3-2.el7.x86_64
+Oct 27 07:00:31 Installed: nagios-plugins-hpjd-2.3.3-2.el7.x86_64
+Oct 27 07:00:31 Installed: nagios-plugins-http-2.3.3-2.el7.x86_64
+Oct 27 07:00:31 Installed: nagios-plugins-time-2.3.3-2.el7.x86_64
+Oct 27 07:00:32 Installed: nagios-plugins-nagios-2.3.3-2.el7.x86_64
+Oct 27 07:00:32 Installed: nagios-plugins-nwstat-2.3.3-2.el7.x86_64
+Oct 27 07:00:32 Installed: nagios-plugins-tcp-2.3.3-2.el7.x86_64
+Oct 27 07:00:32 Installed: nagios-plugins-real-2.3.3-2.el7.x86_64
+Oct 27 07:00:32 Installed: nagios-plugins-mysql-2.3.3-2.el7.x86_64
+Oct 27 07:00:32 Installed: nagios-plugins-ldap-2.3.3-2.el7.x86_64
+Oct 27 07:00:32 Installed: nagios-plugins-ssh-2.3.3-2.el7.x86_64
+Oct 27 07:00:32 Installed: nagios-plugins-procs-2.3.3-2.el7.x86_64
+Oct 27 07:00:32 Installed: nagios-plugins-ntp-2.3.3-2.el7.x86_64
+Oct 27 07:00:32 Installed: nagios-plugins-pgsql-2.3.3-2.el7.x86_64
+Oct 27 07:00:32 Installed: nagios-plugins-mrtgtraf-2.3.3-2.el7.x86_64
+Oct 27 07:00:33 Installed: nagios-plugins-nt-2.3.3-2.el7.x86_64
+Oct 27 07:00:33 Installed: nagios-plugins-dhcp-2.3.3-2.el7.x86_64
+Oct 27 07:00:33 Installed: nagios-plugins-icmp-2.3.3-2.el7.x86_64
+Oct 27 07:00:33 Installed: nagios-plugins-load-2.3.3-2.el7.x86_64
+Oct 27 07:00:33 Installed: nagios-plugins-disk-2.3.3-2.el7.x86_64
+Oct 27 07:00:33 Installed: nagios-plugins-users-2.3.3-2.el7.x86_64
+Oct 27 07:00:33 Installed: nagios-plugins-mrtg-2.3.3-2.el7.x86_64
+Oct 27 07:00:33 Installed: nagios-plugins-cluster-2.3.3-2.el7.x86_64
+Oct 27 07:00:33 Installed: boost169-filesystem-1.69.0-2.el7.x86_64
+Oct 27 07:00:34 Installed: 1:net-snmp-libs-5.7.2-49.el7_9.1.x86_64
+Oct 27 07:00:34 Installed: 1:net-snmp-utils-5.7.2-49.el7_9.1.x86_64
+Oct 27 07:00:34 Installed: nagios-plugins-snmp-2.3.3-2.el7.x86_64
+Oct 27 07:00:34 Installed: libarchive-3.1.2-14.el7_7.x86_64
+Oct 27 07:00:34 Installed: fping-3.10-4.el7.x86_64
+Oct 27 07:00:34 Installed: nagios-plugins-fping-2.3.3-2.el7.x86_64
+Oct 27 07:00:34 Installed: libtirpc-0.2.4-0.16.el7.x86_64
+Oct 27 07:00:35 Installed: rpcbind-0.2.0-49.el7.x86_64
+Oct 27 07:00:35 Installed: nagios-plugins-rpc-2.3.3-2.el7.x86_64
+Oct 27 07:00:36 Installed: lm_sensors-libs-3.4.0-8.20160601gitf9185e5.el7.x86_64
+Oct 27 07:00:36 Installed: lm_sensors-3.4.0-8.20160601gitf9185e5.el7.x86_64
+Oct 27 07:00:36 Installed: nagios-plugins-sensors-2.3.3-2.el7.x86_64
+Oct 27 07:00:36 Installed: geoipupdate-2.5.0-1.el7.x86_64
+Oct 27 07:00:37 Installed: GeoIP-1.5.0-14.el7.x86_64
+Oct 27 07:00:37 Installed: 32:bind-libs-lite-9.11.4-26.P2.el7_9.7.x86_64
+Oct 27 07:00:37 Installed: 32:bind-libs-9.11.4-26.P2.el7_9.7.x86_64
+Oct 27 07:00:37 Installed: 32:bind-utils-9.11.4-26.P2.el7_9.7.x86_64
+Oct 27 07:00:37 Installed: nagios-plugins-dig-2.3.3-2.el7.x86_64
+Oct 27 07:00:37 Installed: nagios-plugins-dns-2.3.3-2.el7.x86_64
+Oct 27 07:00:38 Installed: nettle-2.7.1-9.el7_9.x86_64
+Oct 27 07:00:38 Installed: perl-List-MoreUtils-0.33-9.el7.x86_64
+Oct 27 07:00:38 Installed: perl-Dist-CheckConflicts-0.06-2.el7.noarch
+Oct 27 07:00:38 Installed: autogen-libopts-5.18-5.el7.x86_64
+Oct 27 07:00:39 Installed: ntp-4.2.6p5-29.el7.centos.2.x86_64
+Oct 27 07:00:39 Installed: nagios-plugins-ntp-perl-2.3.3-2.el7.x86_64
+Oct 27 07:00:39 Installed: perl-Import-Into-1.002002-1.el7.noarch
+Oct 27 07:00:39 Installed: perl-utf8-all-0.011-1.el7.noarch
+Oct 27 07:00:39 Installed: trousers-0.3.14-2.el7.x86_64
+Oct 27 07:00:40 Installed: gnutls-3.3.29-9.el7_6.x86_64
+Oct 27 07:00:42 Installed: samba-client-libs-4.10.16-15.el7_9.x86_64
+Oct 27 07:00:42 Installed: libwbclient-4.10.16-15.el7_9.x86_64
+Oct 27 07:00:42 Installed: samba-common-libs-4.10.16-15.el7_9.x86_64
+Oct 27 07:00:43 Installed: libsmbclient-4.10.16-15.el7_9.x86_64
+Oct 27 07:00:43 Installed: samba-client-4.10.16-15.el7_9.x86_64
+Oct 27 07:00:43 Installed: nagios-plugins-disk_smb-2.3.3-2.el7.x86_64
+Oct 27 07:00:43 Installed: qstat-2.11-13.20080912svn311.el7.x86_64
+Oct 27 07:00:43 Installed: nagios-plugins-game-2.3.3-2.el7.x86_64
+Oct 27 07:00:43 Installed: boost169-program-options-1.69.0-2.el7.x86_64
+Oct 27 07:00:44 Installed: icinga2-common-2.13.1-1.el7.icinga.x86_64
+Oct 27 07:00:44 Installed: boost169-date-time-1.69.0-2.el7.x86_64
+Oct 27 07:00:44 Installed: boost169-regex-1.69.0-2.el7.x86_64
+Oct 27 07:00:45 Installed: icinga2-bin-2.13.1-1.el7.icinga.x86_64
+Oct 27 07:00:46 Installed: icinga2-2.13.1-1.el7.icinga.x86_64
+Oct 27 07:00:46 Installed: nagios-plugins-all-2.3.3-2.el7.x86_64
+Oct 27 07:01:21 Installed: icinga2-ido-mysql-2.13.1-1.el7.icinga.x86_64
+Oct 28 09:25:20 Installed: psmisc-22.20-17.el7.x86_64
+Oct 28 10:18:44 Installed: at-3.1.13-24.el7.x86_64
+Oct 28 10:59:11 Installed: net-tools-2.0-0.25.20131004git.el7.x86_64
+Oct 28 11:06:24 Installed: 14:libpcap-1.5.3-12.el7.x86_64
+Oct 28 11:06:24 Installed: 14:tcpdump-4.9.2-4.el7_7.1.x86_64
+---------------------------------------------------------------------
+cat /var/log/secure | grep -i failed
+Oct 26 11:43:05 localhost sshd[1259]: pam_systemd(sshd:session): Failed to release session: Interrupted system call
+Oct 27 08:08:55 localhost sshd[1597]: pam_systemd(sshd:session): Failed to release session: Interrupted system call
+Oct 27 11:19:56 localhost sshd[6893]: pam_systemd(sshd:session): Failed to release session: Interrupted system call
+Oct 28 05:36:17 localhost sshd[29492]: pam_systemd(sshd:session): Failed to release session: Interrupted system call
+Oct 28 05:44:14 localhost sshd[3958]: pam_systemd(sshd:session): Failed to release session: Interrupted system call
+Oct 28 05:45:35 localhost sshd[4647]: pam_systemd(sshd:session): Failed to release session: Interrupted system call
+Oct 28 06:08:00 localhost sshd[4773]: pam_systemd(sshd:session): Failed to release session: Interrupted system call
+Oct 28 07:01:21 localhost sshd[6180]: pam_systemd(sshd:session): Failed to release session: Interrupted system call
+Oct 28 08:54:29 localhost sshd[6436]: pam_systemd(sshd:session): Failed to release session: Interrupted system call
+---------------------------------------------------------------------
+yum install vsftpd FTP SERVER
+---------------------------------------------------------------------
+PORT FWDING
+---------------------------------------------------------------------
+systemctl start vsftpd FTP SERVER
+---------------------------------------------------------------------
+systemctl enable vsftpd
+---------------------------------------------------------------------
+systemctl status vsftpd
+---------------------------------------------------------------------
+vi /etc/vsftpd/vsftpd.conf
+---------------------------------------------------------------------
+yum install ftp -y
+---------------------------------------------------------------------
+ftp localhost
+name:user
+pw:user
+---------------------------------------------------------------------
+ftp/sftp konzola
+get - download
+put - upload
+---------------------------------------------------------------------
+dmesg = HW logy
+---------------------------------------------------------------------
+dmesg -T | grep -i error (-T prepinac cas)
+[Thu Oct 28 09:24:25 2021] BERT: Boot Error Record Table support is disabled. Enable it by using bert_enable as kernel parameter.
+[Thu Oct 28 09:24:27 2021] [drm:vmw_host_log [vmwgfx]] *ERROR* Failed to send host log message.
+[Thu Oct 28 09:24:27 2021] [drm:vmw_host_log [vmwgfx]] *ERROR* Failed to send host log message.
+---------------------------------------------------------------------
+FILTER LOGOV
+---------------------------------------------------------------------
+cd /etc/rsyslog.d/
+---------------------------------------------------------------------
+ll
+---------------------------------------------------------------------
+vi  docker.conf 
+---------------------------------------------------------------------
+if $programname == 'dockerd' then {
+        /var/log/docker.log
+        ~
+}
+---------------------------------------------------------------------
+systemctl restart rsyslog - sluzba
+---------------------------------------------------------------------
+pstree -p
+systemd(1)─┬─NetworkManager(749)─┬─dhclient(873)
+           │                     ├─{NetworkManager}(764)
+           │                     └─{NetworkManager}(766)
+           ├─atd(5813)
+           ├─auditd(694)───{auditd}(695)
+           ├─crond(737)
+           ├─dbus-daemon(724)───{dbus-daemon}(732)
+           ├─dockerd-current(24938)─┬─docker-containe(24943)─┬─{docker-containe}(24945)
+           │                        │                        ├─{docker-containe}(24946)
+           │                        │                        ├─{docker-containe}(24947)
+           │                        │                        ├─{docker-containe}(24948)
+           │                        │                        ├─{docker-containe}(24949)
+           │                        │                        ├─{docker-containe}(24950)
+           │                        │                        └─{docker-containe}(24956)
+           │                        ├─{dockerd-current}(24939)
+           │                        ├─{dockerd-current}(24940)
+           │                        ├─{dockerd-current}(24941)
+           │                        ├─{dockerd-current}(24942)
+           │                        ├─{dockerd-current}(24944)
+           │                        ├─{dockerd-current}(24954)
+           │                        ├─{dockerd-current}(24957)
+           │                        └─{dockerd-current}(24958)
+           ├─firewalld(2327)───{firewalld}(2415)
+           ├─httpd(3077)─┬─httpd(3079)
+           │             ├─httpd(3080)
+           │             ├─httpd(3081)
+           │             ├─httpd(3082)
+           │             ├─httpd(3083)
+           │             └─httpd(3291)
+           ├─icinga2(1593)─┬─icinga2(1608)─┬─icinga2(1611)
+           │               │               ├─{icinga2}(1609)
+           │               │               ├─{icinga2}(1610)
+           │               │               ├─{icinga2}(1620)
+           │               │               ├─{icinga2}(1621)
+           │               │               ├─{icinga2}(1625)
+           │               │               ├─{icinga2}(1626)
+           │               │               ├─{icinga2}(1627)
+           │               │               └─{icinga2}(1628)
+           │               ├─{icinga2}(1614)
+           │               └─{icinga2}(1615)
+           ├─login(743)───bash(1806)
+           ├─lvmetad(552)
+           ├─master(1478)─┬─pickup(23200)
+           │              └─qmgr(1512)
+           ├─mysqld_safe(1128)───mysqld(1310)─┬─{mysqld}(1516)
+           │                                  ├─{mysqld}(1517)
+           │                                  ├─{mysqld}(1518)
+           │                                  ├─{mysqld}(1519)
+           │                                  ├─{mysqld}(1520)
+           │                                  ├─{mysqld}(1521)
+           │                                  ├─{mysqld}(1522)
+           │                                  ├─{mysqld}(1523)
+           │                                  ├─{mysqld}(1524)
+           │                                  ├─{mysqld}(1525)
+           │                                  ├─{mysqld}(1527)
+           │                                  ├─{mysqld}(1528)
+           │                                  ├─{mysqld}(1529)
+           │                                  ├─{mysqld}(1530)
+           │                                  ├─{mysqld}(1531)
+           │                                  ├─{mysqld}(1532)
+           │                                  ├─{mysqld}(1572)
+           │                                  └─{mysqld}(1578)
+           ├─polkitd(720)─┬─{polkitd}(734)
+           │              ├─{polkitd}(738)
+           │              ├─{polkitd}(739)
+           │              ├─{polkitd}(744)
+           │              ├─{polkitd}(745)
+           │              └─{polkitd}(746)
+           ├─rpcbind(731)
+           ├─rsyslogd(24658)─┬─{rsyslogd}(24660)
+           │                 └─{rsyslogd}(24662)
+           ├─sshd(1832)─┬─sshd(18901)───bash(18912)───pstree(25161)
+           │            ├─sshd(18907)───sftp-server(18917)
+           │            ├─sshd(24043)───bash(24053)
+           │            └─sshd(24047)───sftp-server(24052)
+           ├─systemd-journal(531)
+           ├─systemd-logind(723)
+           ├─systemd-udevd(563)
+           ├─tuned(1056)─┬─{tuned}(1509)
+           │             ├─{tuned}(1510)
+           │             ├─{tuned}(1514)
+           │             └─{tuned}(1515)
+           └─vsftpd(23285)
+---------------------------------------------------------------------
+ls -lh /var/log/mess*
+-rw-------. 1 root root 864K Oct 29 05:46 /var/log/messages
+---------------------------------------------------------------------
+ROTACIE LOG SUBOROV - 
+---------------------------------------------------------------------
+vi /etc/logrotate.conf
+---------------------------------------------------------------------
+ls -l /etc/cron.daily/
+total 12
+-rwx------. 1 root root 219 Apr  1  2020 logrotate
+-rwxr-xr-x. 1 root root 618 Oct 30  2018 man-db.cron
+-rwx------. 1 root root 558 Apr 28  2021 rhsmd
+
+SKRIPTY SU OZNACENE NA ZELENO
+---------------------------------------------------------------------
+logrotate -f /etc/logrotate.conf - rychle riesenie rotovania logov
+---------------------------------------------------------------------
+NASTROJE NA ANALYZU LOGOV
+---------------------------------------------------------------------
+logcheck
+---------------------------------------------------------------------
+logwatch - report
+---------------------------------------------------------------------
+ls --full-time
+total 8
+-rw-r--r--. 1 root root 77 2021-10-29 05:44:08.161000000 +0200 docker.conf
+-rw-r--r--. 1 root root 49 2021-02-02 17:34:16.000000000 +0100 listen.conf
+---------------------------------------------------------------------
+---------------------------------------------------------------------
+---------------------------------------------------------------------
+MONITORING TROUBLESHOOTING
+---------------------------------------------------------------------
+---------------------------------------------------------------------
+---------------------------------------------------------------------
+SUMMARY OF RAM USAGE:
+---------------------------------------------------------------------
+free
+              total        used        free      shared  buff/cache   available
+Mem:        1014744      305896      259956        7128      448892      556800
+Swap:       2097148         520     2096628
+---------------------------------------------------------------------
+free -h - human readable
+              total        used        free      shared  buff/cache   available
+Mem:           990M        298M        253M        7.0M        438M        543M
+Swap:          2.0G        520K        2.0G
+---------------------------------------------------------------------
+vmstat / si so = swap in swap out
+procs -----------memory---------- ---swap-- -----io---- -system-- ------cpu-----
+ r  b   swpd   free   buff  cache   si   so    bi    bo   in   cs us sy id wa st
+ 2  0    520 259940     20 448900    0    0    32    32   64  133  0  0 99  0  0
+---------------------------------------------------------------------
+PLNA RAMKA CO ROBIT?
+- Rozsirit kapacitu
+- TOP = zistit proces, ktory zerie RAM najviac = vacsinou applikacia
+- Vymazat cache
+---------------------------------------------------------------------
+sync; echo 3 > /proc/sys/vm/drop_caches - vycistenie cacheky
+---------------------------------------------------------------------
+iostat
+Linux 3.10.0-1160.45.1.el7.x86_64 (localhost.localdomain)       10/29/2021      _x86_64_        (1 CPU)
+
+avg-cpu:  %user   %nice %system %iowait  %steal   %idle
+           0.26    0.09    0.33    0.20    0.00   99.11
+
+Device:            tps    kB_read/s    kB_wrtn/s    kB_read    kB_wrtn
+sda               1.37        34.21        31.86    2599160    2420709
+sdb               0.00         0.05         0.00       3684          0
+sdc               0.00         0.03         0.00       2113          4
+dm-0              1.78        34.04        32.57    2586602    2474530
+dm-1              0.00         0.03         0.00       2284        368
+dm-2              0.00         0.01         0.00       1057          4
+---------------------------------------------------------------------
+sar -u 1 40 - vytazenie procesora a RAM
+Linux 3.10.0-1160.45.1.el7.x86_64 (localhost.localdomain)       10/29/2021      _x86_64_        (1 CPU)
+
+06:38:00 AM     CPU     %user     %nice   %system   %iowait    %steal     %idle
+06:38:01 AM     all      0.00      0.00      1.01      0.00      0.00     98.99
+06:38:02 AM     all      0.00      0.00      1.00      0.00      0.00     99.00
+06:38:03 AM     all      1.01      0.00      0.00      0.00      0.00     98.99
+06:38:04 AM     all      0.00      0.00      0.00      0.00      0.00    100.00
+---------------------------------------------------------------------
+VYTAZENIE PROCESOV 
+---------------------------------------------------------------------
+CO ROBIT AK NEJDE SSH
+- check ssh sluzby
+- check network je to sietova sluzba
+---------------------------------------------------------------------
+systemctl status sshd
+● sshd.service - OpenSSH server daemon
+   Loaded: loaded (/usr/lib/systemd/system/sshd.service; enabled; vendor preset: enabled)
+   Active: active (running) since Thu 2021-10-28 09:27:35 CEST; 21h ago
+     Docs: man:sshd(8)
+           man:sshd_config(5)
+ Main PID: 1832 (sshd)
+   CGroup: /system.slice/sshd.service
+           └─1832 /usr/sbin/sshd -D
+
+Oct 28 09:27:39 localhost.localdomain sshd[1839]: Accepted publickey for root from 10.0.2.2 port 61235 ssh2: RSA SHA256:itaOUgu4Bb4DUocgcOPq65Zj+hX...c+AB/Lr4
+Oct 28 09:41:03 localhost.localdomain sshd[2957]: Connection closed by ::1 port 51830 [preauth]
+Oct 28 09:44:49 localhost.localdomain sshd[3259]: Accepted publickey for root from 10.0.2.2 port 61261 ssh2: RSA SHA256:itaOUgu4Bb4DUocgcOPq65Zj+hX...c+AB/Lr4
+Oct 28 09:44:49 localhost.localdomain sshd[3264]: Accepted publickey for root from 10.0.2.2 port 61262 ssh2: RSA SHA256:itaOUgu4Bb4DUocgcOPq65Zj+hX...c+AB/Lr4
+Oct 28 10:18:42 localhost.localdomain sshd[5757]: Connection closed by 127.0.0.1 port 37384 [preauth]
+Oct 29 04:26:42 localhost.localdomain sshd[18901]: Accepted publickey for root from 10.0.2.2 port 50292 ssh2: RSA SHA256:itaOUgu4Bb4DUocgcOPq65Zj+h...c+AB/Lr4
+Oct 29 04:26:42 localhost.localdomain sshd[18907]: Accepted publickey for root from 10.0.2.2 port 50297 ssh2: RSA SHA256:itaOUgu4Bb4DUocgcOPq65Zj+h...c+AB/Lr4
+Oct 29 05:31:38 localhost.localdomain sshd[23671]: Connection closed by 10.0.2.2 port 50471 [preauth]
+Oct 29 05:36:33 localhost.localdomain sshd[24043]: Accepted publickey for root from 10.0.2.2 port 50492 ssh2: RSA SHA256:itaOUgu4Bb4DUocgcOPq65Zj+h...c+AB/Lr4
+Oct 29 05:36:33 localhost.localdomain sshd[24047]: Accepted publickey for root from 10.0.2.2 port 50493 ssh2: RSA SHA256:itaOUgu4Bb4DUocgcOPq65Zj+h...c+AB/Lr4
+Hint: Some lines were ellipsized, use -l to show in full.
+---------------------------------------------------------------------
+[root@localhost rsyslog.d]# systemctl status network
+● network.service - LSB: Bring up/down networking
+   Loaded: loaded (/etc/rc.d/init.d/network; bad; vendor preset: disabled)
+   Active: active (exited) since Thu 2021-10-28 09:24:41 CEST; 21h ago
+     Docs: man:systemd-sysv-generator(8)
+
+Oct 28 09:24:40 localhost.localdomain systemd[1]: Starting LSB: Bring up/down networking...
+Oct 28 09:24:41 localhost.localdomain network[889]: Bringing up loopback interface:  [  OK  ]
+Oct 28 09:24:41 localhost.localdomain network[889]: Bringing up interface enp0s3:  [  OK  ]
+Oct 28 09:24:41 localhost.localdomain systemd[1]: Started LSB: Bring up/down networking.
+---------------------------------------------------------------------
+POVOLENY FIREWALL?
+PO REBOOTE:
+- siet
+- disky, sietove disky
+- ak hore
+---------------------------------------------------------------------
+logrotate check
+---------------------------------------------------------------------
+cat hosts
+127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
+---------------------------------------------------------------------
+cat /etc/pam.d/sshd
+#%PAM-1.0
+auth       required     pam_sepermit.so
+auth       substack     password-auth
+auth       include      postlogin
+# Used with polkit to reauthorize users in remote sessions
+-auth      optional     pam_reauthorize.so prepare
+account    required     pam_nologin.so
+account    include      password-auth
+password   include      password-auth
+# pam_selinux.so close should be the first session rule
+session    required     pam_selinux.so close
+session    required     pam_loginuid.so
+# pam_selinux.so open should only be followed by sessions to be executed in the user context
+session    required     pam_selinux.so open env_params
+session    required     pam_namespace.so
+session    optional     pam_keyinit.so force revoke
+session    include      password-auth
+session    include      postlogin
+# Used with polkit to reauthorize users in remote sessions
+-session   optional     pam_reauthorize.so prepare
+---------------------------------------------------------------------
+chroot pri SFTP, FTP - change root = zamknutie jail
+yum install duplicity -y
+yum install sshfs -y
+---------------------------------------------------------------------
+C:\Program Files (x86)\SSHFS-Win\bin
+---------------------------------------------------------------------
+https://www.linuxexpres.cz/praxe/serial-o-bashi
+---------------------------------------------------------------------
+GL250 - Enterprise Linux System Administration

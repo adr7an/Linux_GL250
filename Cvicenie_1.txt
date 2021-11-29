@@ -1,0 +1,281 @@
+			CVICENIE 01 - 25.10.2021
+---------------------------------------------------------------------
+---------------------------------------------------------------------
+---------------------------------------------------------------------
+			  LINUX - POKROCILY
+---------------------------------------------------------------------
+---------------------------------------------------------------------
+---------------------------------------------------------------------
+SUSE Linux = SAP podpora
+https://cobbler.github.io/ - automatic install linux
+https://spacewalkproject.github.io/ 
+https://openeng.weebly.com/hp-ilo-license-key-free.html - iLO
+https://supportkb.dell.com/img/ka02R00000015nLQAQ/ka02R00000015nLQAQ_en_US_1.jpeg - iDRAC
+
+---------------------------------------------------------------------
+Domena: training\gauss-0x
+---------------------------------------------------------------------
+ssh root@t4bnvmvs3107 -v - prihlasenie na jump
+Connecting to 10.23.198.139 - port 22
+- cez vcentrum - sa riesi troubleshoot s prihlasenim do VM
+- hardware monitoring - nefungujuce disky, sietove kary
+- zbiera reporty z komponentov, ak je problem posle incident
+- Monalise Eventmanagement - hardware monitoring
+---------------------------------------------------------------------
+/dev - devices
+/dev/sda - disk
+/dev/sda1 - particia
+
+mkfs.xfs /dev/sda1
+mkfs.xfs /dev/sda2
+- zmazeme systemovy disk
+
+mv /etc/reslov.conf /dev/null
+skript:
+
+sh 1. sh 2 > /dev/null
+
+mv -R /usr /dev/null
+---------------------------------------------------------------------
+info ci ide o fyzicky stroj alebo virtualku
+dmidecode -t system
+systemd-detect-virt
+--------------------------------------------------------------------
+RIGHT Ctrl - control Linux 
+---------------------------------------------------------------------
+w - user list
+ 13:06:47 up  1:18,  1 user,  load average: 0.00, 0.01, 0.03
+USER     TTY      FROM             LOGIN@   IDLE   JCPU   PCPU WHAT
+root     pts/0    gateway          11:56    7.00s  0.09s  0.01s w
+---------------------------------------------------------------------
+uname -r - verzia kernelu/jadra
+3.10.0-1160.el7.x86_64
+---------------------------------------------------------------------
+ako si opravit to pomale putty: - uprava sshd configu 
+command mode: set nu/set number - nastavenie cislovania riadkov
+:115 hodi na 115 riadok - priamo nas naviguje na riadok
+1. vytvorit backup suboru
+cp /etc/ssh/sshd_config /etc/ssh/ssh_config.bak
+2. uprava suboru
+vi /etc/ssh/sshd_config a najst UseDNS yes --> zmena na UseDNS no
+# - komentar
+3. ulozit subor :wq
+---------------------------------------------------------------------
+sshd -t - testuje syntakticku spravnost suboru
+systemctl restart sshd - restart sluzby aby sa prejavila ZMENA !!! DOLEZITE
+--------------------------------------------------------------------- 
+uname -a
+Linux localhost.localdomain 3.10.0-1160.el7.x86_64 #1 SMP Mon Oct 19 16:18:59 UTC 2020 x86_64 x86_64 x86_64 GNU/Linux
+--------------------------------------------------------------------- 
+free -h - zobrazenie statistik RAMKY
+              total        used        free      shared  buff/cache   available
+Mem:           990M        158M        697M        6.7M        134M        691M
+Swap:          2.0G          0B        2.0G
+--------------------------------------------------------------------- 
+cat /proc/sys/vm/drop_caches - zobrazi obsah suboru a ci chceme mazat cache
+0
+--------------------------------------------------------------------- 
+echo 3 > /proc/sys/vm/drop_caches - clear cache (> - prepisanie suboru)
+https://www.tecmint.com/clear-ram-memory-cache-buffer-and-swap-space-on-linux/
+--------------------------------------------------------------------- 
+free -h
+              total        used        free      shared  buff/cache   available
+Mem:           990M        151M        793M        6.7M         45M        743M
+Swap:          2.0G          0B        2.0G
+--------------------------------------------------------------------- 
+sync; echo 3 > /proc/sys/vm/drop_caches
+free -h
+              total        used        free      shared  buff/cache   available
+Mem:           990M        151M        794M        6.7M         45M        743M
+Swap:          2.0G          0B        2.0G
+--------------------------------------------------------------------- 
+crontab -e
+no crontab for root - using an empty one
+crontab: installing new crontab
+0 0 * * * sync; echo 3 > /proc/sys/vm/drop_cachesv
+ls -l /var/spool/cron/
+total 4
+-rw-------. 1 root root 50 Oct 25 14:00 root
+--------------------------------------------------------------------- 
+aplikacia:
+cat dm/etc/security/limits.conf
+- pre uzivatela: pouzivat tolko a tolko ramky
+- tolko a tolko procesov
+--------------------------------------------------------------------- 
+top -o %MEM - zoradit podla pamate
+--------------------------------------------------------------------- 
+df -h / df -hT
+Filesystem               Size  Used Avail Use% Mounted on
+devtmpfs                 484M     0  484M   0% /dev
+tmpfs                    496M     0  496M   0% /dev/shm
+tmpfs                    496M  6.8M  489M   2% /run
+tmpfs                    496M     0  496M   0% /sys/fs/cgroup
+/dev/mapper/centos-root   21G  1.3G   20G   6% /
+/dev/sda1               1014M  137M  878M  14% /boot
+tmpfs                    100M     0  100M   0% /run/user/0
+--------------------------------------------------------------------- 
+/proc/ - procesy kernel
+--------------------------------------------------------------------- 
+ls -l /proc/sys/net/ - VPN v ipv4
+total 0
+dr-xr-xr-x. 1 root root 0 Oct 25 14:04 core
+dr-xr-xr-x. 1 root root 0 Oct 25 14:04 ipv4
+dr-xr-xr-x. 1 root root 0 Oct 25 14:04 ipv6
+dr-xr-xr-x. 1 root root 0 Oct 25 14:04 netfilter
+-rw-r--r--. 1 root root 0 Oct 25 14:04 nf_conntrack_max
+dr-xr-xr-x. 1 root root 0 Oct 25 14:04 unix
+--------------------------------------------------------------------- 
+kernel - jadro/kernel OS Linux
+- komunikacia medzi user a system, pouzivatel a HW
+--------------------------------------------------------------------- 
+LINUX kernel moduly/ovladace
+dmidecode -t - info o OS, biose
+--------------------------------------------------------------------- 
+NAJDENIE HW CHYB
+dmesg/dmesg -T - HW issue (T - ludsky citatelny text)
+--------------------------------------------------------------------- 
+dmesg -T | grep -i Network - HW issue (grep -i - ignoruje CASE sensitive)
+--------------------------------------------------------------------- 
+dmesg | grep -i error - vypise vsetky chybove HW
+--------------------------------------------------------------------- 
+ULOHA: zistit verziu kernelu (verzia jadra),  instalacia update, porovnat verzie kernelov
+--------------------------------------------------------------------- 
+1. nahodenie najprv PROXY /etc/yum.conf
+proxy=http://172.16.3.3:3128
+proxy=https://172.16.3.3:3128
+--------------------------------------------------------------------- 
+2. yum update -y alebo -> yes, yes
+3. reboot
+--------------------------------------------------------------------- 
+uname -r
+3.10.0-1160.45.1.el7.x86_64
+3.10.0-1160.el7.x86_64 vs 3.10.0-1160.45.1.el7.x86_64
+--------------------------------------------------------------------- 
+rpm -qa | grep kernel - vypise vsetky verzie kernelov
+kernel-tools-libs-3.10.0-1160.45.1.el7.x86_64
+kernel-3.10.0-1160.45.1.el7.x86_64
+kernel-tools-3.10.0-1160.45.1.el7.x86_64
+kernel-3.10.0-1160.el7.x86_64
+--------------------------------------------------------------------- 
+dmesg -T | grep -i virtual
+[Mon Oct 25 14:18:33 2021] DMI: innotek GmbH VirtualBox/VirtualBox, BIOS VirtualBox 12/01/2006
+[Mon Oct 25 14:18:33 2021] CPU MTRRs all blank - virtualized system.
+[Mon Oct 25 14:18:33 2021] Booting paravirtualized kernel on KVM
+[Mon Oct 25 14:18:33 2021] KVM setup paravirtual spinlock
+[Mon Oct 25 14:18:34 2021] systemd[1]: Detected virtualization kvm.
+[Mon Oct 25 14:18:34 2021] systemd[1]: Starting Setup Virtual Console...
+--------------------------------------------------------------------- 
+lsmod | head -n 10 - zoznam ovladacov, 
+Module                  Size  Used by
+ip6t_rpfilter          12595  1
+ip6t_REJECT            12625  2
+nf_reject_ipv6         13717  1 ip6t_REJECT
+ipt_REJECT             12541  2                  -> pouzity 2mi
+nf_reject_ipv4         13373  1 ipt_REJECT
+xt_conntrack           12760  11
+ebtable_nat            12807  1
+ebtable_broute         12731  1
+bridge                151336  1 ebtable_broute
+--------------------------------------------------------------------- 
+REBOOT - VZDY treba oznamit
+--------------------------------------------------------------------- 
+lsmod | grep sctp - Stream Control Transmission Protocol 
+https://en.wikipedia.org/wiki/Stream_Control_Transmission_Protocol
+--------------------------------------------------------------------- 
+SERVEROVA FARMA - JUMP Server je ROUTER, lebo spaja pocitac k ostatnym
+88.12.10.32; 10.0.0.1 - router
+server ----> server2 10.0.0.2
+	---> server3 10.0.0.3
+		...
+	---> server150 10.10.0.150
+routing:
+router - unix OS, ktory ma routing table
+route - cesta a ukazuje na ktore cesty sa moze pripojit
+--------------------------------------------------------------------- 
+lsmod | grep -i iptable - forwarding IP, presmerovanie, Firewalls
+iptable_nat            12875  1
+nf_nat_ipv4            14115  1 iptable_nat
+iptable_mangle         12695  1
+iptable_security       12705  1
+iptable_raw            12678  1
+iptable_filter         12810  1
+ip_tables              27126  5 iptable_security,iptable_filter,iptable_mangle,iptable_nat,iptable_raw
+--------------------------------------------------------------------- 
+modprobe sctp - pridanie ovladaca
+--------------------------------------------------------------------- 
+lsmod | grep -i sctp
+sctp                  279238  2
+libcrc32c              12644  4 xfs,sctp,nf_nat,nf_conntrack
+--------------------------------------------------------------------- 
+modinfo sctp
+filename:       /lib/modules/3.10.0-1160.45.1.el7.x86_64/kernel/net/sctp/sctp.ko.xz
+license:        GPL
+description:    Support for the SCTP protocol (RFC2960)
+author:         Linux Kernel SCTP developers <lksctp-developers@lists.sourceforge.net>
+alias:          net-pf-10-proto-132
+alias:          net-pf-2-proto-132
+retpoline:      Y
+rhelversion:    7.9
+srcversion:     B546D0103446307E37C1793
+depends:        libcrc32c
+intree:         Y
+vermagic:       3.10.0-1160.45.1.el7.x86_64 SMP mod_unload modversions
+signer:         CentOS Linux kernel signing key
+sig_key:        F5:EF:E0:5F:FF:E7:34:59:FB:55:F6:1B:3A:BD:2F:18:1F:8E:51:A0
+sig_hashalgo:   sha256
+parm:           no_checksums:Disable checksums computing and verification (bool)
+--------------------------------------------------------------------- 
+ULOHA: zavedme modul msdos do kernelu
+--------------------------------------------------------------------- 
+modprobe msdos
+--------------------------------------------------------------------- 
+lsmod | grep -i msdos
+msdos                  17332  0
+fat                    65950  1 msdos
+--------------------------------------------------------------------- 
+modinfo msdos - info o ovladaci
+filename:       /lib/modules/3.10.0-1160.45.1.el7.x86_64/kernel/fs/fat/msdos.ko.xz
+description:    MS-DOS filesystem support
+author:         Werner Almesberger
+license:        GPL
+alias:          fs-msdos
+retpoline:      Y
+rhelversion:    7.9
+srcversion:     4F6C3F5CD5452A5E7F290E0
+depends:        fat
+intree:         Y
+vermagic:       3.10.0-1160.45.1.el7.x86_64 SMP mod_unload modversions
+signer:         CentOS Linux kernel signing key
+sig_key:        F5:EF:E0:5F:FF:E7:34:59:FB:55:F6:1B:3A:BD:2F:18:1F:8E:51:A0
+sig_hashalgo:   sha256
+--------------------------------------------------------------------- 
+ULOHA: zistime ci mame este pripoojenu disketovu mechaniku modul sa vola floppy?
+BLACKLIST BOOT Incializacii - sa nenacitaju ovladace
+vi /etc/modprobe.d/dccp-blacklist.conf
+graficky network manager
+nmcli
+nmtui
+VZDY IBA JEDEN NETWORK MANAGER na JEDEN SERVER
+--------------------------------------------------------------------- 
+cat /etc/resolv.conf - ZOZNAM DNS-domeny
+# Generated by NetworkManager
+search training.sk-kosice.t-systems.sk
+nameserver 10.233.133.4
+nameserver 10.233.97.187
+--------------------------------------------------------------------- 
+systemctl restart network 
+--------------------------------------------------------------------- 
+/sys/ - adresar tykajuci sa diskov, kernelu
+https://geekpeek.net/rescan-scsi-bus-on-linux-system/
+sysctl.conf - kernel parametre
+--------------------------------------------------------------------- 
+RAM + CPU
+kernel je priorita, ak nezije kernel nezije ani ostatne komponenty
+
+kernel
+aplikacie
+/etc/sysctl.conf
+--------------------------------------------------------------------- 
+vi /etc/security/limits.conf - limity prihlaseni users
+--------------------------------------------------------------------- 
+

@@ -1,0 +1,569 @@
+			CVICENIE 03 - 27.10.2021
+---------------------------------------------------------------------
+---------------------------------------------------------------------
+---------------------------------------------------------------------
+			  LINUX - POKROCILY
+---------------------------------------------------------------------
+---------------------------------------------------------------------
+---------------------------------------------------------------------
+USERS AND GROUPS
+----------------------------------------------------------------------
+----------------------------------------------------------------------
+---------------------------------------------------------------------
+DOCS:https://docs.google.com/document/d/1qB-yhA4KFeOk07uQCtk0jnB1oY57qR7ixVO7tNc6WxI/edit?usp=sharing
+/etc/passwd 
+- databaza uzivatelov
+root:x:0:0:root:/root:/bin/bash
+meno_uzivatela:ma_heslo:UID:GID:komentar:domaci_adresar:SHELL
+
+UID = user ID
+GID = group ID
+
+SHELL - prikazovy riadok a je ich niekolko
+https://hyperpolyglot.org/unix-shells
+
+CLI - command line interface (prikazovy riadok)
+
+mail:x:8:12:mail:/var/spool/mail:/sbin/nologin
+/sbin/nologin - user, ktory sa nebude hlasit, nema pristup do shellu: do cli 
+---------------------------------------------------------------------
+cat /etc/passwd - zoznam typov uzivatelov
+root:x:0:0:root:/root:/bin/bash
+bin:x:1:1:bin:/bin:/sbin/nologin
+daemon:x:2:2:daemon:/sbin:/sbin/nologin
+adm:x:3:4:adm:/var/adm:/sbin/nologin
+lp:x:4:7:lp:/var/spool/lpd:/sbin/nologin
+sync:x:5:0:sync:/sbin:/bin/sync
+shutdown:x:6:0:shutdown:/sbin:/sbin/shutdown
+halt:x:7:0:halt:/sbin:/sbin/halt
+mail:x:8:12:mail:/var/spool/mail:/sbin/nologin
+operator:x:11:0:operator:/root:/sbin/nologin
+games:x:12:100:games:/usr/games:/sbin/nologin
+ftp:x:14:50:FTP User:/var/ftp:/sbin/nologin
+nobody:x:99:99:Nobody:/:/sbin/nologin
+systemd-network:x:192:192:systemd Network Management:/:/sbin/nologin
+dbus:x:81:81:System message bus:/:/sbin/nologin
+polkitd:x:999:998:User for polkitd:/:/sbin/nologin
+sshd:x:74:74:Privilege-separated SSH:/var/empty/sshd:/sbin/nologin
+postfix:x:89:89::/var/spool/postfix:/sbin/nologin
+user:x:1000:1000:user:/home/user:/bin/bash
+apache:x:48:48:Apache:/usr/share/httpd:/sbin/nologin
+---------------------------------------------------------------------
+cd ~ - cesta domov k uzivatelovi
+---------------------------------------------------------------------
+cat /etc/shadow - hesla su zaheshovane, nevieme ich precitat
+root:$6$5SaeScHMi/vkd9Jr$wOpdhZE2nrIcRQUjOW/J0DfC9FfZbimriQPj9SzVG5deUQHxtMga63QyWH1n4gBeHAJNFsSRS0adBI8HV0O3Z.::0:99999:7:::
+bin:*:18353:0:99999:7:::
+daemon:*:18353:0:99999:7:::
+adm:*:18353:0:99999:7:::
+lp:*:18353:0:99999:7:::
+sync:*:18353:0:99999:7:::
+shutdown:*:18353:0:99999:7:::
+halt:*:18353:0:99999:7:::
+mail:*:18353:0:99999:7:::
+operator:*:18353:0:99999:7:::
+games:*:18353:0:99999:7:::
+ftp:*:18353:0:99999:7:::
+nobody:*:18353:0:99999:7:::
+systemd-network:!!:18926::::::
+dbus:!!:18926::::::
+polkitd:!!:18926::::::
+sshd:!!:18926::::::
+postfix:!!:18926::::::
+user:$6$KdGad5zEqs4g1pbq$ZHhLMs9CL/aLwaxdq2HhOsFKfScAOXDzq33vqQ503P/6WjI/riTwGE6YJ5/.NlyknnJnWAJTW6AJ84/Ny18kq1::0:99999:7:::
+apache:!!:18926::::::
+---------------------------------------------------------------------
+uzivatelske prava:
+ls -l /etc/passwd 
+-rw-r--r--. 1 root root 894 Oct 26 10:35 /etc/passwd
+ls -l /etc/shadow
+----------. 1 root root 711 Oct 26 10:35 /etc/shadow
+---------------------------------------------------------------------
+PRAVA UZIVATELOV pre subory
+ciselne prava:
+
+read = 4 
+write = 2 
+execute = 1
+
+chmod u      g    o
+chmod 4+2+1  4+2  4
+      r+w+x  r+w  r
+
+chmod 764 den.txt
+chmod 640 den.txt
+
+co nerobit
+chmod 777 - nemoze nikto
+chmod 000 - nikto nemoze nic
+chmod -R -x /bin
+
+- rekurzivne by sme odstranili spustenia pre vsetkych a pre vsetky subory v adresari /bin vratane prikazu chmod
+---------------------------------------------------------------------
+ls -l /etc/pam.d/ | grep sshd
+-rw-r--r--. 1 root root  904 Aug  9  2019 sshd
+---------------------------------------------------------------------
+INC00004: ssh is not running:
+- check /etc/passwd - kontrola korektnosti prav
+- solution: ls -l /etc/passwd
+chmod 644 /etc/passwd ; reboot
+---------------------------------------------------------------------
+---------------------------------------------------------------------
+---------------------------------------------------------------------
+USERS
+---------------------------------------------------------------------
+---------------------------------------------------------------------
+---------------------------------------------------------------------
+ULOHA: Vytvorime uzivatela
+passwd -l user - blockovanie uzivatela
+passwd -u user - unlock uzivatela
+
+- vas oblubeny knizny hrdina
+useradd MacoMliec
+id MacoMliec
+uid=1001(MacoMliec) gid=1001(MacoMliec) groups=1001(MacoMliec)
+---------------------------------------------------------------------
+passwd MacoMliec
+---------------------------------------------------------------------
+Changing password for user MacoMliec.
+New password: maco
+BAD PASSWORD: The password is shorter than 8 characters
+Retype new password:
+passwd: all authentication tokens updated successfully.
+---------------------------------------------------------------------
+ls -l /home/
+total 0
+drwx------. 2 MacoMliec MacoMliec 62 Oct 27 05:14 MacoMliec
+drwx------. 2 user      user      62 Oct 26 07:49 user
+---------------------------------------------------------------------
+cat /etc/passwd | grep MacoMliec
+MacoMliec:x:1001:1001::/home/MacoMliec:/bin/bash
+---------------------------------------------------------------------
+passwd -l MacoMliec - zablokovanie usera
+Locking password for user MacoMliec.
+passwd: Success
+---------------------------------------------------------------------
+DIAGNOSTIKA:
+1. ak pride incident:
+- check cat /etc/passwd; /etc/shadow
+- check logy 
+- skusime sa prihlasit
+2.ak nejde:
+---------------------------------------------------------------------
+tail -f /var/log/secure
+Oct 26 11:43:04 localhost sshd[1255]: pam_unix(sshd:session): session closed for user root
+Oct 26 11:43:05 localhost sshd[1259]: pam_systemd(sshd:session): Failed to release session: Interrupted system call
+Oct 26 11:43:05 localhost sshd[1259]: pam_unix(sshd:session): session closed for user root
+Oct 27 04:00:41 localhost sshd[3138]: Accepted password for root from 10.0.2.2 port 57528 ssh2
+Oct 27 04:00:41 localhost sshd[3142]: Accepted password for root from 10.0.2.2 port 57529 ssh2
+Oct 27 04:00:42 localhost sshd[3138]: pam_unix(sshd:session): session opened for user root by (uid=0)
+Oct 27 04:00:42 localhost sshd[3142]: pam_unix(sshd:session): session opened for user root by (uid=0)
+Oct 27 05:14:47 localhost useradd[3227]: new group: name=MacoMliec, GID=1001
+Oct 27 05:14:47 localhost useradd[3227]: new user: name=MacoMliec, UID=1001, GID=1001, home=/home/MacoMliec, shell=/bin/bash
+Oct 27 05:15:53 localhost passwd: pam_unix(passwd:chauthtok): password changed for MacoMliec
+---------------------------------------------------------------------
+passwd --status MacoMliec - zistime stav
+MacoMliec LK 2021-10-27 0 99999 7 -1 (Password locked.)
+passwd -S MacoMliec
+MacoMliec LK 2021-10-27 0 99999 7 -1 (Password locked.)
+---------------------------------------------------------------------
+https://www.2daygeek.com/lock-unlock-disable-enable-user-account-linux/ 
+---------------------------------------------------------------------
+3. odblokovanie uzivatela:
+passwd -u MacoMliec
+Unlocking password for user MacoMliec.
+passwd: Success
+---------------------------------------------------------------------
+passwd -S MacoMliec
+MacoMliec PS 2021-10-27 0 99999 7 -1 (Password set, SHA512 crypt.)
+---------------------------------------------------------------------
+yum install mariadb-server -y
+---------------------------------------------------------------------
+yum install postgresql-server postgresql-contrib -y
+---------------------------------------------------------------------
+cat /etc/passwd
+postgres:x:26:26:PostgreSQL Server:/var/lib/pgsql:/bin/bash
+---------------------------------------------------------------------
+useradd ruksak
+[root@localhost ~]# su ruksak
+[ruksak@localhost root]$ exit
+exit
+[root@localhost ~]# ls -la /home/ruksak/
+total 16
+drwx------. 2 ruksak ruksak  83 Oct 27 05:45 .
+drwxr-xr-x. 5 root   root    49 Oct 27 05:45 ..
+-rw-------. 1 ruksak ruksak   5 Oct 27 05:45 .bash_history
+-rw-r--r--. 1 ruksak ruksak  18 Apr  1  2020 .bash_logout
+-rw-r--r--. 1 ruksak ruksak 193 Apr  1  2020 .bash_profile
+-rw-r--r--. 1 ruksak ruksak 231 Apr  1  2020 .bashrc
+---------------------------------------------------------------------
+[root@localhost ~]# rm -rf /home/ruksak/.bash*
+[root@localhost ~]# su ruksak
+bash-4.2$ ------> nema .bash skripty
+---------------------------------------------------------------------
+oprava:
+[root@localhost ~]# ls -la /home/user/.bash*
+-rw-r--r--. 1 user user  18 Apr  1  2020 /home/user/.bash_logout
+-rw-r--r--. 1 user user 193 Apr  1  2020 /home/user/.bash_profile
+-rw-r--r--. 1 user user 231 Apr  1  2020 /home/user/.bashrc
+cp /home/user/.bash* /home/ruksak - skopirujeme chybajuce .bash subory
+chown -R ruksak:ruksak /home/ruksak/ - prava 
+su ruksak
+[ruksak@localhost root]$
+---------------------------------------------------------------------
+---------------------------------------------------------------------
+---------------------------------------------------------------------
+EXPORT PREMENNYCH
+---------------------------------------------------------------------
+---------------------------------------------------------------------
+---------------------------------------------------------------------
+echo $PWD
+vi .bashrc
+HISTTIMEFORMAT="%d/%m/%y %T "
+source .bashrc
+---------------------------------------------------------------------
+cat .bashrc = PRIDAVAJU SA TU ROZNE ALIASY, PREMENNE
+# .bashrc
+
+# User specific aliases and functions
+
+alias rm='rm -i'
+alias cp='cp -i'
+alias mv='mv -i'
+
+HISTTIMEFORMAT="%d/%m/%y %T "
+
+
+# Source global definitions
+if [ -f /etc/bashrc ]; then
+        . /etc/bashrc
+fi
+---------------------------------------------------------------------
+reboot
+---------------------------------------------------------------------
+cat .bash_logout
+# ~/.bash_logout
+
+- ukoncovacie skripty
+---------------------------------------------------------------------
+ls -la .bash*
+vi .bash_profile - profil, co sa ma urobit PO SPUSTENI OS
+---------------------------------------------------------------------
+---------------------------------------------------------------------
+---------------------------------------------------------------------
+GROUPS
+---------------------------------------------------------------------
+---------------------------------------------------------------------
+---------------------------------------------------------------------
+groupadd tajovsky
+id MacoMliec
+gpasswd -a MacoMliec tajovsky - pridanie uzivatela priamo
+cat /etc/group
+---------------------------------------------------------------------
+usermod -aG tajovsky ruksak - pridanie uzivatela cez mod
+cat /etc/group
+---------------------------------------------------------------------
+-ak sa vymaze /etc/passwd, /etc/shadow nenacita sa system
+---------------------------------------------------------------------
+---------------------------------------------------------------------
+---------------------------------------------------------------------
+MONITORING TOOL
+---------------------------------------------------------------------
+---------------------------------------------------------------------
+---------------------------------------------------------------------
+yum install wget -y
+---------------------------------------------------------------------
+systemctl start mariadb.service
+systemctl enable mariadb.service
+---------------------------------------------------------------------
+/usr/bin/mysql_secure_installation
+yum install php php-gd php-intl php-ldap php-ZendFramework php-ZendFramework-Db-Adapter-Pdo-Mysql -y
+rpm --import http://packages.icinga.org/icinga.key 
+rpm -i http://packages.icinga.org/epel/7/release/noarch/icinga-rpm-release-7-1.el7.centos.noarch.rpm
+---------------------------------------------------------------------
+yum repolist
+yum install icinga2 nagios-plugins-all -y
+---------------------------------------------------------------------
+cat /etc/group
+---------------------------------------------------------------------
+systemctl start icinga2.service
+systemctl enable icinga2.service
+---------------------------------------------------------------------
+Created symlink from /etc/systemd/system/multi-user.target.wants/icinga2.service to /usr/lib/systemd/system/icinga2.service.
+icinga2 feature list
+Disabled features: api command compatlog debuglog elasticsearch gelf graphite icingadb ido-mysql influxdb influxdb2 livestatus opentsdb perfdata statusdata syslog
+Enabled features: checker mainlog notification
+---------------------------------------------------------------------
+usermod -a -G icingacmd apache
+---------------------------------------------------------------------
+id apache
+uid=48(apache) gid=48(apache) groups=48(apache),993(icingacmd)
+---------------------------------------------------------------------
+cat /etc/group | grep -i icinga
+---------------------------------------------------------------------
+icinga:x:994:
+icingacmd:x:993:icinga,apache
+---------------------------------------------------------------------
+gpasswd icingacmd
+Changing the password for group icingacmd
+New Password: heslo
+---------------------------------------------------------------------
+cat /etc/gshadow
+icinga:!::
+icingacmd:$6$8ZlDF/ZVUO6/$.s2JxfBYMDVlPvbtHMAz4xzZJz5g2DdXx4/lxn.FTUs/ZMZpWT10yMjlLAANJNfS52Q.sJAw4DFiRTe6JNK1F1::icinga,apache
+---------------------------------------------------------------------
+chage -l MacoMliec - expiracia hesla
+Last password change                                    : Oct 27, 2021
+Password expires                                        : never
+Password inactive                                       : never
+Account expires                                         : never
+Minimum number of days between password change          : 0
+Maximum number of days between password change          : 99999 - nekonecno
+Number of days of warning before password expires       : 7
+---------------------------------------------------------------------
+https://www.tecmint.com/manage-user-password-expiration-and-aging-in-linux/
+---------------------------------------------------------------------
+ULOHA: vytvorme uzivatela klavir a dajme ho do skupiny nastroje
+nastavme uzivatela klavir, aby sa mu expirovalo heslo 11.11.2021
+---------------------------------------------------------------------
+[root@localhost ~]# groupadd nastroje
+[root@localhost ~]# useradd klavir
+[root@localhost ~]# gpasswd -a klavir nastroje
+Adding user klavir to group nastroje
+[root@localhost ~]# id klavir
+uid=1003(klavir) gid=1005(klavir) groups=1005(klavir),1004(nastroje)
+---------------------------------------------------------------------
+[root@localhost ~]# passwd klavir
+Changing password for user klavir.
+New password:
+BAD PASSWORD: The password is shorter than 8 characters
+Retype new password:
+passwd: all authentication tokens updated successfully.
+---------------------------------------------------------------------
+[root@localhost ~]# passwd -S klavir
+klavir PS 2021-10-27 0 99999 7 -1 (Password set, SHA512 crypt.)
+---------------------------------------------------------------------
+chage -l klavir
+---------------------------------------------------------------------
+Last password change                                    : Oct 27, 2021
+Password expires                                        : never
+Password inactive                                       : never
+Account expires                                         : never
+Minimum number of days between password change          : 0
+Maximum number of days between password change          : 99999
+Number of days of warning before password expires       : 7
+
+---------------------------------------------------------------------
+[root@localhost ~]# chage -M 15 klavir
+---------------------------------------------------------------------
+chage -l klavir
+Last password change                                    : Oct 27, 2021
+Password expires                                        : Nov 11, 2021
+Password inactive                                       : never
+Account expires                                         : Jan 01, 2022
+Minimum number of days between password change          : 0
+Maximum number of days between password change          : 15
+Number of days of warning before password expires       : 7
+---------------------------------------------------------------------
+vi /etc/login.defs - info o uzivatelskych udajoch
+---------------------------------------------------------------------
+https://wintelguy.com/umask-calc.pl
+---------------------------------------------------------------------
+/etc/ldap.conf - config LDAP server
+ldap commands = 6 commands
+---------------------------------------------------------------------
+---------------------------------------------------------------------
+---------------------------------------------------------------------
+PAM = Pluggable Authentification Module
+---------------------------------------------------------------------
+---------------------------------------------------------------------
+---------------------------------------------------------------------
+- change PAM is dangerous
+---------------------------------------------------------------------
+vi /etc/pam.d/fingerprint-auth
+---> hlasime sa do linuxuL
+1. zapneme PC
+2. meno a heslo
+---> PAM POLITIKA --> /etc/passwd && /etc/shadow
+---------------------------------------------------------------------
+vi /etc/pam.d/passwd
+#%PAM-1.0
+auth       include      system-auth
+account    include      system-auth
+password   substack     system-auth
+-password   optional    pam_gnome_keyring.so use_authtok
+password   substack     postlogin
+---------------------------------------------------------------------
+---> vzdialeny server - PERU
+ssh hlasime sa:
+ssh user24@serverinperu.com
+--->
+prihlasime ----> network ---->
+-- musime mat nejake ssh pravidla
+sshd config: ktorych uzivatelov vieme pustit/zablokujeme
+musime prejst:
+-- LDAP pravidlami
+-- PAM pravidlami
+---------------------------------------------------------------------
+IF /etc/pam.d missing:
+https://askubuntu.com/questions/132965/how-do-i-boot-into-single-user-mode-from-grub
+---------------------------------------------------------------------
+journal -xe
+---------------------------------------------------------------------
+---------------------------------------------------------------------
+---------------------------------------------------------------------
+SECURITY ADMINISTRATION
+---------------------------------------------------------------------
+---------------------------------------------------------------------
+---------------------------------------------------------------------
+basic security - passwords
+
+ssh security - 
+
+firewall - je to ochrana pred tym aby niekto sa nepripojil tam kde nema
+
+
+
+clovek1 clovek2
+- sprava (ideme na pivo o 19.00)
+
+---> najjednoduchsie kryptovanie je:
+19 = 01
+00 = 02
+
+certifikaty - TLS,SSL
+
+proxy
+
+kluce
+
+ssh
+
+antispam
+
+antivirus
+---------------------------------------------------------------------
+last
+root     pts/0        10.0.2.2         Wed Oct 27 08:19   still logged in
+root     pts/0        10.0.2.2         Wed Oct 27 07:05 - 08:08  (01:03)
+reboot   system boot  3.10.0-1160.45.1 Wed Oct 27 07:05 - 10:33  (03:28)
+root     pts/0        10.0.2.2         Wed Oct 27 06:24 - down   (00:40)
+reboot   system boot  3.10.0-1160.45.1 Wed Oct 27 06:24 - 07:05  (00:41)
+root     pts/0        10.0.2.2         Wed Oct 27 06:17 - crash  (00:06)
+reboot   system boot  3.10.0-1160.45.1 Wed Oct 27 06:16 - 07:05  (00:48)
+root     pts/0        10.0.2.2         Wed Oct 27 04:00 - crash  (02:16)
+root     pts/0        10.0.2.2         Tue Oct 26 10:36 - 11:43  (01:06)
+reboot   system boot  3.10.0-1160.45.1 Tue Oct 26 10:35 - 07:05  (20:29)
+root     pts/0        10.0.2.2         Tue Oct 26 09:18 - crash  (01:16)
+reboot   system boot  3.10.0-1160.45.1 Tue Oct 26 09:18 - 07:05  (21:46)
+root     pts/0        10.0.2.2         Tue Oct 26 09:04 - crash  (00:13)
+reboot   system boot  3.10.0-1160.45.1 Tue Oct 26 09:04 - 07:05  (22:01)
+root     pts/0        10.0.2.2         Tue Oct 26 10:00 - crash  (00:-56)
+reboot   system boot  3.10.0-1160.45.1 Tue Oct 26 10:00 - 07:05  (21:04)
+root     pts/0        10.0.2.2         Tue Oct 26 09:39 - down   (00:20)
+reboot   system boot  3.10.0-1160.45.1 Tue Oct 26 09:38 - 10:00  (00:21)
+reboot   system boot  3.10.0-1160.45.1 Tue Oct 26 09:36 - 10:00  (00:24)
+root     pts/0        10.0.2.2         Tue Oct 26 09:13 - down   (00:22)
+reboot   system boot  3.10.0-1160.45.1 Tue Oct 26 09:13 - 09:35  (00:22)
+root     pts/0        10.0.2.2         Tue Oct 26 08:31 - down   (00:41)
+reboot   system boot  3.10.0-1160.45.1 Tue Oct 26 08:31 - 09:12  (00:41)
+root     pts/0        10.0.2.2         Tue Oct 26 08:08 - crash  (00:22)
+root     pts/0        gateway          Tue Oct 26 08:03 - 08:08  (00:04)
+reboot   system boot  3.10.0-1160.el7. Tue Oct 26 08:01 - 09:12  (01:11)
+
+wtmp begins Tue Oct 26 08:01:11 2021
+---------------------------------------------------------------------
+lastb
+
+btmp begins Wed Oct 27 07:05:33 2021
+---------------------------------------------------------------------
+/etc/passwd
+---------------------------------------------------------------------
+ACL = access control list
+---------------------------------------------------------------------
+OSI MODEL
+pocitac ----> pocitac
+---------------------------------------------------------------------
+ip a s
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host
+       valid_lft forever preferred_lft forever
+2: enp0s3: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP group default qlen 1000
+    link/ether 08:00:27:1b:a8:83 brd ff:ff:ff:ff:ff:ff
+    inet 10.0.2.15/24 brd 10.0.2.255 scope global noprefixroute dynamic enp0s3
+       valid_lft 73292sec preferred_lft 73292sec
+    inet6 fe80::4b8c:dafb:247:4f82/64 scope link noprefixroute
+       valid_lft forever preferred_lft forever
+---------------------------------------------------------------------
+MAC ADRESA = link/ether 08:00:27:1b:a8:83 root user
+---------------------------------------------------------------------
+systemctl status firewalld
+● firewalld.service - firewalld - dynamic firewall daemon
+   Loaded: loaded (/usr/lib/systemd/system/firewalld.service; enabled; vendor preset: enabled)
+   Active: active (running) since Wed 2021-10-27 07:05:37 CEST; 3h 41min ago
+     Docs: man:firewalld(1)
+ Main PID: 745 (firewalld)
+   CGroup: /system.slice/firewalld.service
+           └─745 /usr/bin/python2 -Es /usr/sbin/firewalld --nofork --nopid
+
+Oct 27 07:05:35 localhost.localdomain systemd[1]: Starting firewalld - dynamic firewall daemon...
+Oct 27 07:05:37 localhost.localdomain systemd[1]: Started firewalld - dynamic firewall daemon.
+Oct 27 07:05:38 localhost.localdomain firewalld[745]: WARNING: AllowZoneDrifting is enabled. This is consider...now.
+Hint: Some lines were ellipsized, use -l to show in full.
+---------------------------------------------------------------------
+firewall-cmd --list-services
+dhcpv6-client ssh
+---------------------------------------------------------------------
+PORTS:
+https://secbot.com/docs/ports/common-ports
+---------------------------------------------------------------------
+WHITELIST access
+BLACKLIST not access
+---------------------------------------------------------------------
+ssh root@22.143.89.11
+bfd = brute force defense
+brute force - velky pocet pokusov o prihlasenie do systemu po kym sa neprihlasime
+22.143.89.11 - poslednych 5 min - 300x sa pokusal uhadnut root heslo
+riesenie: firewall zablokuje IP
+---------------------------------------------------------------------
+black list:
+dos utok - jeden utoci 
+ddos utok - viaceri utocia
+---> uklada do logov
+---> /opt/app_cistenie_aut/log/access.log ---> od 14:14 do 14:53 ----> 72.123.43.12 bolo 50000 utokov
+ = zablokovat IP
+
+white list:
+ddos ochrana:
+---------------------------------------------------------------------
+---------------------------------------------------------------------
+---------------------------------------------------------------------
+SELINUX
+---------------------------------------------------------------------
+---------------------------------------------------------------------
+---------------------------------------------------------------------
+SE in Selinux
+SELINUX is not:
+1) antivir sw
+2) firewall
+3) “all in one
+---------------------------------------------------------------------
+https://www.abclinuxu.cz/serialy/selinux-nebojte-se
+---------------------------------------------------------------------
+sestatus
+SELinux status:                 enabled
+SELinuxfs mount:                /sys/fs/selinux
+SELinux root directory:         /etc/selinux
+Loaded policy name:             targeted
+Current mode:                   enforcing
+Mode from config file:          enforcing
+Policy MLS status:              enabled
+Policy deny_unknown status:     allowed
+Max kernel policy version:      31
+---------------------------------------------------------------------
+cat /var/log/secure | grep -i 81.23.123.12 | wc -l - pocet IP adries zachytene firewallom
+0
+---------------------------------------------------------------------

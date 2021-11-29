@@ -1,0 +1,630 @@
+			CVICENIE 04 - 28.10.2021
+---------------------------------------------------------------------
+---------------------------------------------------------------------
+---------------------------------------------------------------------
+			  LINUX - POKROCILY
+---------------------------------------------------------------------
+---------------------------------------------------------------------
+---------------------------------------------------------------------
+SSH - Security
+----------------------------------------------------------------------
+----------------------------------------------------------------------
+----------------------------------------------------------------------
+https://www.linuxexpres.cz/
+----------------------------------------------------------------------
+cat /var/log/secure | grep -i Accepted | wc -l
+30
+----------------------------------------------------------------------
+/etc/ssh/
+ssh_config - konfiguracny subor klienta
+sshd_config - konfiguracny subor serveru
+----------------------------------------------------------------------
+sshd -t - testovanie konfiguracneho suboru
+----------------------------------------------------------------------
+systemctl status sshd
+systemctl restart sshd
+----------------------------------------------------------------------
+sshd -T | grep -i Listen
+listenaddress [::]:22
+listenaddress 0.0.0.0:22
+----------------------------------------------------------------------
+python virtualenv
+/opt/oddo/demo - aplikacia port 8869
+/opt/oddo/test - testovacka port 8868
+/opt/oddo/prod - produkcia
+/opt/oddo/develop -
+----------------------------------------------------------------------
+vi /etc/ssh/sshd_config - VYTVARANIE BACKUPOV (ZALOH) VZDY KED MENIME CONFIGURAKY
+- :set nu 
+- :17 riadok - Port 22 - bezpecnost
+- ListenAddress - IP na ktorej pocuva, poslucha 0.0.0.0 - poslucha na vsetky IP
+# Logging 
+AUTHPRIV - oblast zberu
+
+# Authentification
+# PermitRootLogin yes - root sa prihlasuje pomocou hesla
+# StrictModes yes - prava
+
+----------------------------------------------------------------------
+tail -f /var/log/secure - LOGY SECURITY
+Oct 28 05:36:13 localhost sshd[3936]: Server listening on 0.0.0.0 port 22.
+Oct 28 05:36:13 localhost sshd[3936]: Server listening on :: port 22.
+Oct 28 05:36:13 localhost polkitd[714]: Unregistered Authentication Agent for unix-process:3929:8105028 (system bus name :1.81, object path /org/freedesktop/PolicyKit1/AuthenticationAgent, locale en_US.UTF-8) (disconnected from bus)
+Oct 28 05:36:17 localhost sshd[29485]: pam_unix(sshd:session): session closed for user root
+Oct 28 05:36:17 localhost sshd[29492]: pam_systemd(sshd:session): Failed to release session: Interrupted system call
+Oct 28 05:36:17 localhost sshd[29492]: pam_unix(sshd:session): session closed for user root
+Oct 28 05:36:26 localhost sshd[3945]: Accepted password for root from 10.0.2.2 port 60795 ssh2
+Oct 28 05:36:26 localhost sshd[3958]: Accepted password for root from 10.0.2.2 port 60798 ssh2
+Oct 28 05:36:27 localhost sshd[3945]: pam_unix(sshd:session): session opened for user root by (uid=0)
+Oct 28 05:36:27 localhost sshd[3958]: pam_unix(sshd:session): session opened for user root by (uid=0)
+----------------------------------------------------------------------
+ssh --> server
+----> ssh pravidla: OK 
+----> kerberos pravidla: OK
+----> PAM pravidla: OK
+----------------------------------------------------------------------
+UsePAM yes - pouzivat PAM 96
+UseDNS no - cakanie na DNS server, ak je no necaka na odozvu, rovno nas prihlasi
+----------------------------------------------------------------------
+Match User anoncvs
+X11Forwarding no
+----------------------------------------------------------------------
+vi motd - message of the day (message)
+----------------------------------------------------------------------
+ULOHA SSH:
+- motd - napisat text
+----------------------------------------------------------------------
+SSH KLUCE
+----------------------------------------------------------------------
+pam_tally2, cryptography
+----------------------------------------------------------------------
+ssh -V - verzia ssh
+OpenSSH_7.4p1, OpenSSL 1.0.2k-fips  26 Jan 2017
+----------------------------------------------------------------------
+https://www.unix.com/solaris/41303-command-know-ssh-version.html
+----------------------------------------------------------------------
+Kryptografia
+----------------------------------------------------------------------
+Odosielatel - Sprava - Prijemca
+Odosielatel - Posol - Sprava - Prijemca
+Odosielatel - Posol_1 - Sprava - Posol_2 - Prijemca
+Odosielatel -> Sprava -> Sifra -> Desifrovanie -> Sprava -> Prijemca
+----------------------------------------------------------------------
+Transpozicna sifra
+help me = ehlp me
+posun o 1 
+jablko = ajlbok
+----------------------------------------------------------------------
+Substitucna sifra
+jablko 
+kbcklp
+jablko
++ 3 znaky
+----------------------------------------------------------------------
+Cezarova sifra
+pre n=3
+ABC...XYZ
+DEF...ABC
+
+Ceasar cyper = SOS = ...---...
+----------------------------------------------------------------------
+Medzinarodna Morseova abeceda
+Ahoj = .-. . ..---.- -- (morseova abeceda)
+SOS = ...---...
+----------------------------------------------------------------------
+Symetricka sifra - jeden kluc ktory poznaju obidve strany 
+Odosielatel - Sprava (sifrovana) - Prijemca (ssl certifikaty)
+- SSL
+
+Asymetricka sifra 
+- RSA: 
+ - verejny kluc
+ - sukromny kluc
+ - ssh
+
+PRINCIP SSH 
+
+klient ----> server
+klient sa prihlasi na server:
+- ssh kluc (sukromny + verejny) ma klient
+- sukromny kluc nikdy neopusti toho klienta
+- klient ma verejny kluc
+- verejny kluc prekopirujeme na server
+
+Enigma:
+Rejewski, Zygalski, Turing ---> kluc prelomili
+----------------------------------------------------------------------
+ULOHA: vygenerovat si ssh kluce:
+1. software:
+ - putty
+ - puttygen
+ - pageant
+
+2. vygenerujeme private/public kluce - PuTTY Key Generator
+SSH-2 RSA key
+
+3. private key - Otvorime Peagent - a pridame private key
+
+4. public key ---> upload na CentOS
+/root/.ssh/authentification
+----------------------------------------------------------------------
+mkdir /root/.ssh
+cd .ssh
+vi authorized_keys
+----------------------------------------------------------------------
+copy public key:
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCmnYXJw/oF42NjhRAl/bNBKqni0zrt3J24EYO57veF2SBbq1Ss1ZLOslwTfY89XZ1opvAfIozWFYaQUjP65AAwdY/MrPccpXA5NwjTZGUrnPWPqcTLMGjJffQmOKAdbjHHJpRF6RcR042Xvk35kUsOYa6eNnQhQqazvnr699fSuJqgPqVO0OcifThXHPSB+um9CkTF2wIsKqloC8Qq6/8LH4oZMUBxi9hS5Pyo3ljbKJO4tCABGNtZm+WIRL4s9UT+fxW00fWEcRWCR1vrE3hEVh/Lc5HusT+nni1HSTqma+nFQQM2n0lm17V8sYvSZHrnjViI5gXEkkUdwonxN6z/ rsa-key-20211028
+----------------------------------------------------------------------
+prava subory:
+read = cat
+read - citanie suborov, vi, mv, rm
+write - zapisovanie/uprava suborov
+execute - spustenie suboru:
+
+chmod -R -x /bin - nebezpecne
+----------------------------------------------------------------------
+prava adresara:
+read - ls
+write - kopirovat/mazat/presuvat
+execute - cd mozem vojst do priecinka
+
+change: zmigrujte NAS storage
+/etc/fstab
+
+riesenie: 
+10.0.2.12:/data /data nfs defaults 0 0
+10.0.2.13:/data /data1 nfs defaults 0 0
+
+riesenie:
+check
+touch /data1/1.txt
+----------------------------------------------------------------------
+----------------------------------------------------------------------
+----------------------------------------------------------------------
+PROCESY
+----------------------------------------------------------------------
+----------------------------------------------------------------------
+----------------------------------------------------------------------
+proces - akakolvek udalost ktora sa udeje
+procesy:
+- ps = ps -ef | grep rsyslog
+
+- htop
+
+- jobs: background a foreaground
+
+- monitoring procesov: top, htop
+
+- procesy: status:
+  - running
+  - sleeping
+  - stopping
+  - zombie
+
+- pstree - rodicia a potomkovia
+
+- prioritizacia
+
+- signaly: kill -l
+
+----------------------------------------------------------------------
+yes >> plnim_disk.txt &
+[1] 19937
+----------------------------------------------------------------------
+rm -rf plnim_disk.txt
+----------------------------------------------------------------------
+kill -9 19937 (PID)
+----------------------------------------------------------------------
+kill -l
+ 1) SIGHUP       2) SIGINT       3) SIGQUIT      4) SIGILL       5) SIGTRAP
+ 6) SIGABRT      7) SIGBUS       8) SIGFPE       9) SIGKILL     10) SIGUSR1
+11) SIGSEGV     12) SIGUSR2     13) SIGPIPE     14) SIGALRM     15) SIGTERM
+16) SIGSTKFLT   17) SIGCHLD     18) SIGCONT     19) SIGSTOP     20) SIGTSTP
+21) SIGTTIN     22) SIGTTOU     23) SIGURG      24) SIGXCPU     25) SIGXFSZ
+26) SIGVTALRM   27) SIGPROF     28) SIGWINCH    29) SIGIO       30) SIGPWR
+31) SIGSYS      34) SIGRTMIN    35) SIGRTMIN+1  36) SIGRTMIN+2  37) SIGRTMIN+3
+38) SIGRTMIN+4  39) SIGRTMIN+5  40) SIGRTMIN+6  41) SIGRTMIN+7  42) SIGRTMIN+8
+43) SIGRTMIN+9  44) SIGRTMIN+10 45) SIGRTMIN+11 46) SIGRTMIN+12 47) SIGRTMIN+13
+48) SIGRTMIN+14 49) SIGRTMIN+15 50) SIGRTMAX-14 51) SIGRTMAX-13 52) SIGRTMAX-12
+53) SIGRTMAX-11 54) SIGRTMAX-10 55) SIGRTMAX-9  56) SIGRTMAX-8  57) SIGRTMAX-7
+58) SIGRTMAX-6  59) SIGRTMAX-5  60) SIGRTMAX-4  61) SIGRTMAX-3  62) SIGRTMAX-2
+63) SIGRTMAX-1  64) SIGRTMAX
+----------------------------------------------------------------------
+killall5 - zabije vsetky procesy
+----------------------------------------------------------------------
+yum install psmisc -y
+----------------------------------------------------------------------
+killall sshd 
+- instalacia psmisc
+- odpojil kazdeho z sshd
+- ako to opravit?
+
+riesenie: ist na konzolu a checknut sshd sluzbu + zapnut sshd
+systemctl start sshd
+----------------------------------------------------------------------
+pstree
+systemd─┬─NetworkManager─┬─dhclient
+        │                └─2*[{NetworkManager}]
+        ├─auditd───{auditd}
+        ├─crond
+        ├─dbus-daemon───{dbus-daemon}
+        ├─firewalld───{firewalld}
+        ├─httpd───5*[httpd]
+        ├─icinga2─┬─icinga2─┬─icinga2
+        │         │         └─8*[{icinga2}]
+        │         └─2*[{icinga2}]
+        ├─login───bash
+        ├─lvmetad
+        ├─master─┬─pickup
+        │        └─qmgr
+        ├─mysqld_safe───mysqld───18*[{mysqld}]
+        ├─polkitd───6*[{polkitd}]
+        ├─rpcbind
+        ├─rsyslogd───2*[{rsyslogd}]
+        ├─sshd─┬─sshd───bash───pstree
+        │      └─sshd───sftp-server
+        ├─systemd-journal
+        ├─systemd-logind
+        ├─systemd-udevd
+        └─tuned───4*[{tuned}]
+----------------------------------------------------------------------
+pstree -p
+systemd(1)─┬─NetworkManager(749)─┬─dhclient(873)
+           │                     ├─{NetworkManager}(764)
+           │                     └─{NetworkManager}(766)
+           ├─auditd(694)───{auditd}(695)
+           ├─crond(737)
+           ├─dbus-daemon(724)───{dbus-daemon}(732)
+           ├─firewalld(748)───{firewalld}(870)
+           ├─httpd(1057)─┬─httpd(1541)
+           │             ├─httpd(1542)
+           │             ├─httpd(1543)
+           │             ├─httpd(1544)
+           │             └─httpd(1545)
+           ├─icinga2(1593)─┬─icinga2(1608)─┬─icinga2(1611)
+           │               │               ├─{icinga2}(1609)
+           │               │               ├─{icinga2}(1610)
+           │               │               ├─{icinga2}(1620)
+           │               │               ├─{icinga2}(1621)
+           │               │               ├─{icinga2}(1625)
+           │               │               ├─{icinga2}(1626)
+           │               │               ├─{icinga2}(1627)
+           │               │               └─{icinga2}(1628)
+           │               ├─{icinga2}(1614)
+           │               └─{icinga2}(1615)
+           ├─login(743)───bash(1806)
+           ├─lvmetad(552)
+           ├─master(1478)─┬─pickup(1511)
+           │              └─qmgr(1512)
+           ├─mysqld_safe(1128)───mysqld(1310)─┬─{mysqld}(1516)
+           │                                  ├─{mysqld}(1517)
+           │                                  ├─{mysqld}(1518)
+           │                                  ├─{mysqld}(1519)
+           │                                  ├─{mysqld}(1520)
+           │                                  ├─{mysqld}(1521)
+           │                                  ├─{mysqld}(1522)
+           │                                  ├─{mysqld}(1523)
+           │                                  ├─{mysqld}(1524)
+           │                                  ├─{mysqld}(1525)
+           │                                  ├─{mysqld}(1527)
+           │                                  ├─{mysqld}(1528)
+           │                                  ├─{mysqld}(1529)
+           │                                  ├─{mysqld}(1530)
+           │                                  ├─{mysqld}(1531)
+           │                                  ├─{mysqld}(1532)
+           │                                  ├─{mysqld}(1572)
+           │                                  └─{mysqld}(1578)
+           ├─polkitd(720)─┬─{polkitd}(734)
+           │              ├─{polkitd}(738)
+           │              ├─{polkitd}(739)
+           │              ├─{polkitd}(744)
+           │              ├─{polkitd}(745)
+           │              └─{polkitd}(746)
+           ├─rpcbind(731)
+           ├─rsyslogd(1059)─┬─{rsyslogd}(1077)
+           │                └─{rsyslogd}(1078)
+           ├─sshd(1832)─┬─sshd(1835)───bash(1843)───pstree(1885)
+           │            └─sshd(1839)───sftp-server(1852)
+           ├─systemd-journal(531)
+           ├─systemd-logind(723)
+           ├─systemd-udevd(563)
+           └─tuned(1056)─┬─{tuned}(1509)
+                         ├─{tuned}(1510)
+                         ├─{tuned}(1514)
+                         └─{tuned}(1515)
+----------------------------------------------------------------------
+ps aux | grep -i 'Z' - all user executed status
+USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+root         1  0.5  0.6 128036  6764 ?        Ss   09:24   0:02 /usr/lib/systemd/systemd --switched-root --system --deserialize 22
+root      2033  0.0  0.0 112816   996 pts/0    S+   09:30   0:00 grep --color=auto -i Z
+----------------------------------------------------------------------
+ps -ef | head -5
+UID        PID  PPID  C STIME TTY          TIME CMD
+root         1     0  0 09:24 ?        00:00:02 /usr/lib/systemd/systemd --switched-root --system --deserialize 22
+root         2     0  0 09:24 ?        00:00:00 [kthreadd]
+root         3     2  0 09:24 ?        00:00:00 [kworker/0:0]
+root         4     2  0 09:24 ?        00:00:00 [kworker/0:0H]
+----------------------------------------------------------------------
+systemctl status sshd
+Main PID: 1832 (sshd)
+----------------------------------------------------------------------
+ULOHA: Najdime sluzbu firewalld, zistime ci bezi, PID
+Main PID: 748 (firewalld)
+----------------------------------------------------------------------
+systemctl status firewalld | grep -i PID
+ Main PID: 748 (firewalld)
+           └─748 /usr/bin/python2 -Es /usr/sbin/firewalld --nofork --nopid
+----------------------------------------------------------------------
+KERNEL = RIADI VSETKY PROCESY V OS
+KERNEL MA PROCESS MANAGEMENT
+----------------------------------------------------------------------
+who - uzivatelia su 2:
+root     tty1         2021-10-28 09:27 = tty = terminal devices pripojeny uzivatel z koznoly
+root     pts/0        2021-10-28 09:27 (10.0.2.2) - pts/0 =  z putty(klient) vzdialene prihlaseny uzivatel 
+----------------------------------------------------------------------
+top
+top - 09:36:35 up 12 min,  2 users,  load average: 0.00, 0.04, 0.05 = uzivatelia, uptime
+Tasks: 117 total,   3 running, 114 sleeping,   0 stopped,   0 zombie = procesy
+%Cpu(s):  0.3 us,  1.0 sy,  0.0 ni, 98.7 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st = vyuzite procesoru
+KiB Mem :  1014744 total,   405472 free,   259164 used,   350108 buff/cache = vyuzitie SWAP
+KiB Swap:  2097148 total,  2097148 free,        0 used.   609812 avail Mem = vyuzitie RAM
+
+PID = Proces ID
+USER = uzivatel pod ktorym bezia procesy
+PR = Priorita
+NI = Nice - mozeme menit (zaporne hodnoty maju vacsiu prioritu)
+	-20 = najvacsia priorita, je proces, ktory najviac prostriedkov zerie
+	-zaporne hodnoty: -20, 0 - moze iba root 
+
+VIRT = RAM MEMORY
+RES = 
+SHR =  SHARED MEMORY
+S = STATUS PROCESU
+%CPU = VYUZITIE CPU
+%MEM = VYUZITE RAM
+TIME+ = AKO DLHO PROCES BEZI
+COMMAND = prikaz, ktory spustil proces
+----------------------------------------------------------------------
+time systemctl restart httpd
+
+real    0m1.269s
+user    0m0.011s
+sys     0m0.015s
+----------------------------------------------------------------------
+ULOHA: Skusime si skopirovat adresar /usr do /media a vypisat za aky cas to prebehlo
+time cp -R /usr /media = time (prepinac -R = skopiruje komplet cely adresar)
+----------------------------------------------------------------------
+top -o %CPU - zoradenie podla stlpca CPU = 
+----------------------------------------------------------------------
+ZOMBIE PROCES = je podozrivy proces, ktory zerie RAMKU, CPU
+- NEMA RODICA a nema sa o co opriet
+----------------------------------------------------------------------
+yum install at -y - instalacia balika at jednorazove planovanie
+----------------------------------------------------------------------
+systemctl start atd
+systemctl enable atd
+systemctl status atd
+● atd.service - Job spooling tools
+   Loaded: loaded (/usr/lib/systemd/system/atd.service; enabled; vendor preset: enabled)
+   Active: active (running) since Thu 2021-10-28 10:19:11 CEST; 12s ago
+ Main PID: 5813 (atd)
+   CGroup: /system.slice/atd.service
+           └─5813 /usr/sbin/atd -f
+
+Oct 28 10:19:11 localhost.localdomain systemd[1]: Started Job spooling tools.
+----------------------------------------------------------------------
+at 23:00
+at> cp /etc/resolv.conf /mnt/
+at> <EOT> ctrl+d
+job 1 at Thu Oct 28 23:00:00 2021
+----------------------------------------------------------------------
+CRON
+----------------------------------------------------------------------
+crontab -l - vypisanie
+crontab -e - uprava
+crontab -r - vymazat
+----------------------------------------------------------------------
+0 0 * * * sync; echo 3 > /proc/sys/vm/drop_caches
+
+
+#minuta, hodina, den v mesiaci, mesiac v roku, den v tyzdni
+28 20 * * * cp -f /etc/fstab /media/
+----------------------------------------------------------------------
+https://crontab-generator.org/
+https://crontab.guru/
+----------------------------------------------------------------------
+cat /etc/cron.allow - vypise zoznam pristupov do cron
+----------------------------------------------------------------------
+cat crontab
+SHELL=/bin/bash
+PATH=/sbin:/bin:/usr/sbin:/usr/bin
+MAILTO=root
+
+# For details see man 4 crontabs
+
+# Example of job definition:
+# .---------------- minute (0 - 59)
+# |  .------------- hour (0 - 23)
+# |  |  .---------- day of month (1 - 31)
+# |  |  |  .------- month (1 - 12) OR jan,feb,mar,apr ...
+# |  |  |  |  .---- day of week (0 - 6) (Sunday=0 or 7) OR sun,mon,tue,wed,thu,fri,sat
+# |  |  |  |  |
+# *  *  *  *  * user-name  command to be executed
+----------------------------------------------------------------------
+----------------------------------------------------------------------
+----------------------------------------------------------------------
+NETWORKING
+----------------------------------------------------------------------
+----------------------------------------------------------------------
+----------------------------------------------------------------------
+ip -c a s
+1. sietova karta = localhost
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host
+       valid_lft forever preferred_lft forever
+2. sietova karta = enp0s3 
+2: enp0s3: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP group default qlen 1000
+    link/ether 08:00:27:1b:a8:83 brd ff:ff:ff:ff:ff:ff
+    inet 10.0.2.15/24 brd 10.0.2.255 scope global noprefixroute dynamic enp0s3
+       valid_lft 80959sec preferred_lft 80959sec
+    inet6 fe80::4b8c:dafb:247:4f82/64 scope link noprefixroute
+       valid_lft forever preferred_lft forever
+----------------------------------------------------------------------
+yum install net-tools -y
+----------------------------------------------------------------------
+http://jodies.de/ipcalc
+----------------------------------------------------------------------
+TRENING:
+https://edua.apps.tssk.sk/trainings?q=Basic%20IP%20communication%20and%20network%20topologies
+----------------------------------------------------------------------
+ethtool enp0s3
+Settings for enp0s3:
+        Supported ports: [ TP ]
+        Supported link modes:   10baseT/Half 10baseT/Full
+                                100baseT/Half 100baseT/Full
+                                1000baseT/Full
+        Supported pause frame use: No
+        Supports auto-negotiation: Yes
+        Supported FEC modes: Not reported
+        Advertised link modes:  10baseT/Half 10baseT/Full
+                                100baseT/Half 100baseT/Full
+                                1000baseT/Full
+        Advertised pause frame use: No
+        Advertised auto-negotiation: Yes
+        Advertised FEC modes: Not reported
+        Speed: 1000Mb/s
+        Duplex: Full
+        Port: Twisted Pair
+        PHYAD: 0
+        Transceiver: internal
+        Auto-negotiation: on
+        MDI-X: off (auto)
+        Supports Wake-on: umbg
+        Wake-on: d
+        Current message level: 0x00000007 (7)
+                               drv probe link
+        Link detected: yes
+----------------------------------------------------------------------
+dmesg | grep -i enp0s3
+[   14.942143] IPv6: ADDRCONF(NETDEV_UP): enp0s3: link is not ready
+[   14.945474] e1000: enp0s3 NIC Link is Up 1000 Mbps Full Duplex, Flow Control: RX
+[   14.953192] IPv6: ADDRCONF(NETDEV_UP): enp0s3: link is not ready
+[   14.956931] IPv6: ADDRCONF(NETDEV_CHANGE): enp0s3: link becomes ready
+----------------------------------------------------------------------
+dmesg -T | grep -i enp0s3
+----------------------------------------------------------------------
+yum install tcpdump -y
+----------------------------------------------------------------------
+tcpdump
+----------------------------------------------------------------------
+ls -l /etc/sysconfig/network-scripts/ifcfg-enp0s3
+-rw-r--r--. 1 root root 312 Oct 26 07:58 /etc/sysconfig/network-scripts/ifcfg-enp0s3
+vi /etc/sysconfig/network-scripts/ifcfg-enp0s3
+TYPE="Ethernet"
+PROXY_METHOD="none"
+BROWSER_ONLY="no"
+BOOTPROTO="dhcp"
+DEFROUTE="yes"
+IPV4_FAILURE_FATAL="no"
+IPV6INIT="yes"
+IPV6_AUTOCONF="yes"
+IPV6_DEFROUTE="yes"
+IPV6_FAILURE_FATAL="no"
+IPV6_ADDR_GEN_MODE="stable-privacy"
+NAME="enp0s3"
+UUID="ab5a0487-45f6-4ede-84c5-62220896c601"
+DEVICE="enp0s3"
+ONBOOT="yes" - sietova karta nabehne
+----------------------------------------------------------------------
+GATEWAY = ROOT = BRANA CEZ KTORU SA DOSTAVAME
+ip r s
+default via 10.0.2.2 dev enp0s3 proto dhcp metric 100
+10.0.2.0/24 dev enp0s3 proto kernel scope link src 10.0.2.15 metric 100
+----------------------------------------------------------------------
+route
+Kernel IP routing table
+Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
+default         gateway         0.0.0.0         UG    100    0        0 enp0s3
+10.0.2.0        0.0.0.0         255.255.255.0   U     100    0        0 enp0s3
+----------------------------------------------------------------------
+route -n
+Kernel IP routing table
+Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
+0.0.0.0         10.0.2.2        0.0.0.0         UG    100    0        0 enp0s3
+10.0.2.0        0.0.0.0         255.255.255.0   U     100    0        0 enp0s3
+----------------------------------------------------------------------
+- os admin
+/opt/app/data12/
+
+chmod -R 000 /opt/app/data12
+
+- aplikacny admin
+
+sietar:
+
+backup:
+
+backup agent: ---> backup server
+route ---> backup server
+----------------------------------------------------------------------
+21 - ftp
+22 - ssh
+23 - telnet
+----------------------------------------------------------------------
+----------------------------------------------------------------------
+netstat -naplut
+Active Internet connections (servers and established)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name
+tcp        0      0 0.0.0.0:3306            0.0.0.0:*               LISTEN      1310/mysqld
+tcp        0      0 0.0.0.0:111             0.0.0.0:*               LISTEN      731/rpcbind
+tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN      1832/sshd
+tcp        0      0 127.0.0.1:25            0.0.0.0:*               LISTEN      1478/master
+tcp        0      0 10.0.2.15:22            10.0.2.2:61234          ESTABLISHED 1835/sshd: root@pts
+tcp        0      0 10.0.2.15:22            10.0.2.2:61235          ESTABLISHED 1839/sshd: root@not
+tcp        0      0 10.0.2.15:22            10.0.2.2:61261          ESTABLISHED 3259/sshd: root@pts
+tcp        0      0 10.0.2.15:22            10.0.2.2:61262          ESTABLISHED 3264/sshd: root@not
+tcp6       0      0 :::111                  :::*                    LISTEN      731/rpcbind
+tcp6       0      0 :::80                   :::*                    LISTEN      3077/httpd
+tcp6       0      0 :::22                   :::*                    LISTEN      1832/sshd
+tcp6       0      0 ::1:25                  :::*                    LISTEN      1478/master
+tcp6       0      0 127.0.0.1:80            127.0.0.1:45948         TIME_WAIT   -
+udp        0      0 0.0.0.0:68              0.0.0.0:*                           873/dhclient
+udp        0      0 0.0.0.0:111             0.0.0.0:*                           731/rpcbind
+udp        0      0 0.0.0.0:893             0.0.0.0:*                           731/rpcbind
+udp6       0      0 :::111                  :::*                                731/rpcbind
+udp6       0      0 :::893                  :::*                                731/rpcbind
+----------------------------------------------------------------------
+netstat -naplut | grep -i tcp
+tcp        0      0 0.0.0.0:3306            0.0.0.0:*               LISTEN      1310/mysqld
+tcp        0      0 0.0.0.0:111             0.0.0.0:*               LISTEN      731/rpcbind
+tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN      1832/sshd
+tcp        0      0 127.0.0.1:25            0.0.0.0:*               LISTEN      1478/master
+tcp        0      0 10.0.2.15:22            10.0.2.2:61234          ESTABLISHED 1835/sshd: root@pts
+tcp        0      0 10.0.2.15:22            10.0.2.2:61235          ESTABLISHED 1839/sshd: root@not
+tcp        0      0 10.0.2.15:22            10.0.2.2:61261          ESTABLISHED 3259/sshd: root@pts
+tcp        0      0 10.0.2.15:22            10.0.2.2:61262          ESTABLISHED 3264/sshd: root@not
+tcp6       0      0 :::111                  :::*                    LISTEN      731/rpcbind
+tcp6       0      0 :::80                   :::*                    LISTEN      3077/httpd
+tcp6       0      0 :::22                   :::*                    LISTEN      1832/sshd
+tcp6       0      0 ::1:25                  :::*                    LISTEN      1478/master
+tcp6       0      0 127.0.0.1:80            127.0.0.1:45952         TIME_WAIT   -
+----------------------------------------------------------------------
+DNS - domain name server = domenove nazvy serverov
+----------------------------------------------------------------------
+/etc/resolv.conf
+cat /etc/resolv.conf
+# Generated by NetworkManager
+search training.sk-kosice.t-systems.sk
+nameserver 10.233.133.4
+nameserver 10.233.97.187
+----------------------------------------------------------------------
+BONDING
+----------------------------------------------------------------------
+eth2 eth4 - pokazi
+bond2
+
+virtualny server - virtualne sietovky
+VLAN ---> swtich
