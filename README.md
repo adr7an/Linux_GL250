@@ -1,2 +1,2 @@
-# Linux_GL250
+# Linux_basics
 Intermediate scripts of Linux
